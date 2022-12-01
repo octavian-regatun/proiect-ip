@@ -11,6 +11,9 @@ Color txtClr = Color(26, 188, 156);
 
 Font font, fontBold;
 
+sf::String playerInput;
+sf::Text playerText;
+
 int menuCounter = 0; //0 for MainMenu, 1 for CreateMenu
 
 class Button
@@ -66,7 +69,15 @@ void CreateImagesMenu(RenderWindow& window);
 void Menu(RenderWindow& window);
 bool isMousePressed(RenderWindow& window, RectangleShape collider);
 bool exitTimer(); //avem nevoie de timer deoarece cand dam esc si nu avem timer se va apela de mai multe ori exit-ul
+void Clamp(unsigned int max, unsigned int min, unsigned int& value);
 
+void Clamp(unsigned int max, unsigned int min, unsigned int& value)
+{
+	if (value > max)
+		value = max;
+	else if (value <= min)
+		value = min;
+}
 bool exitTimer()
 {
 	Clock clock;
@@ -146,8 +157,8 @@ void CreateImagesMenu(RenderWindow& window)
 int main()
 {
 	// create the window
-	int width = 1000;
-	int height = 1000;
+	unsigned int width = 1000;
+	unsigned int height = 1000;
 
 	sf::RenderWindow window(sf::VideoMode(width, height), "My bug");
 
@@ -160,6 +171,9 @@ int main()
 	Menu(window);
 
 	bool isPressed = false;
+	char typeSize = 'n';
+	char moveObject = 'n'; //am pus n de la null
+
 	// run the program as long as the window is open
 	while (window.isOpen())
 	{
@@ -168,80 +182,159 @@ int main()
 		while (window.pollEvent(event))
 		{
 			// "close requested" event: we close the window
-			if (event.type == Event::Closed)
-				window.close();
-			else
-				switch (menuCounter) //butoanele vor functiona in functie de meniul curent
-				{
-					case 0: {
+			switch (event.type)
+			{
+				case Event::Closed:
+					window.close();
+					break;
 
-						RectangleShape collider = Mbuttons[menuCounter].btns[0];
-						if (isMousePressed(window, collider)) //check if mouse is pressed on the button
-						{
-							CreateImagesMenu(window);
-						}
-						else if (Keyboard::isKeyPressed(Keyboard::Escape) && !isPressed)
-						{
-							isPressed = true;
-							window.close();
-						}
+				default:
+					break;
+			}
+			switch (menuCounter) //butoanele vor functiona in functie de meniul curent
+			{
+				case 0: {
 
-						break;
+					RectangleShape collider = Mbuttons[menuCounter].btns[0];
+					if (isMousePressed(window, collider)) //check if mouse is pressed on the button
+					{
+						CreateImagesMenu(window);
 					}
-					case 1: {
-						RectangleShape rectangle = Mbuttons[menuCounter].btns[0];
-						RectangleShape circle = Mbuttons[menuCounter].btns[1];
-						RectangleShape triangle = Mbuttons[menuCounter].btns[2];
+					else if (Keyboard::isKeyPressed(Keyboard::Escape) && !isPressed)
+					{
+						isPressed = true;
+						window.close();
+					}
 
-						if (isMousePressed(window, rectangle))
-						{
+					break;
+				}
+				case 1: {
+					RectangleShape rectangleBtn = Mbuttons[menuCounter].btns[0];
+					RectangleShape circleBtn = Mbuttons[menuCounter].btns[1];
+					RectangleShape triangleBtn = Mbuttons[menuCounter].btns[2];
+
+					CircleShape circle;
+					RectangleShape rectangle;
+					CircleShape triangle; //se poate transforma din cerc in triunghi deoarece nu avem clasa pt triunghi
+					if (isMousePressed(window, rectangleBtn))
+					{
+						typeSize = 'r';
+					}
+					else if (isMousePressed(window, circleBtn))
+					{
+						typeSize = 'c';
+					}
+					else if (isMousePressed(window, triangleBtn))
+					{
+						typeSize = 't';
+					}
+
+					switch (typeSize) //scuze pt atatea switch/if dar sincer nu stiu cum sa fac altcumva :)
+					{
+						case 'r': {
+
+							unsigned int h, l;
+							cout << "Inaltimea: ";
+							cin >> h;
+							cout << "Lungimea: ";
+							cin >> l;
+							//aici poti daca vrei sa intrebi ce culoare ar dori(doar o idee)
+
+							Clamp(width - 300, 10, l);
+							Clamp(height - 300, 10, h);
+
 							CreateImagesMenu(window);
-							int rectLength = 120;
-							int rectHeight = 50;
-							RectangleShape rectShape(Vector2f(rectLength, rectHeight));
-							rectShape.setOrigin(rectLength / 2.f, rectHeight / 2.f);
-							rectShape.setPosition(width / 2.f, height / 2.f);
+							rectangle.setSize(Vector2f(l, h));
+							rectangle.setOrigin(l / 2.f, h / 2.f);
+							rectangle.setPosition(width / 2.f, height / 2.f);
 
-							window.draw(rectShape);
+							window.draw(rectangle);
 							window.display();
+
+							moveObject = typeSize;
+							typeSize = 'n'; //la final reinitializam typeSize cu n pentru a finaliza procesul de creare
+							break;
 						}
-						else if (isMousePressed(window, circle))
-						{
+						case 'c': {
+
+							unsigned int r;
+							cout << "Raza: ";
+							cin >> r;
+
+							Clamp(width / 3, 10, r);
+
 							CreateImagesMenu(window);
 
-							CircleShape circle(50);
-							circle.setOrigin(50, 50);
-							circle.setPosition(100, 100);
+							circle.setRadius(r);
+							circle.setOrigin(r, r);
+							circle.setPosition(width / 2.f, height / 2.f);
 
 							window.draw(circle);
 							window.display();
+
+							moveObject = typeSize;
+							typeSize = 'n';
+							break;
 						}
-						else if (isMousePressed(window, triangle))
-						{
+						case 't': {
+							unsigned int l;
+							cout << "Latura: ";
+							cin >> l;
+
+							Clamp(width / 3, 10, l);
+
 							CreateImagesMenu(window);
 
-							CircleShape triangle(80.f, 3);
-							triangle.setOrigin(50, 50);
-							triangle.setPosition(400, 200);
+							triangle.setRadius(l);
+							triangle.setPointCount(3);
+							triangle.setOrigin(l, l);
+							triangle.setPosition(width / 2.f, height / 2.f);
 
 							window.draw(triangle);
 							window.display();
-						}
-						else if (Keyboard::isKeyPressed(Keyboard::Escape) && !isPressed)
-						{
-							isPressed = true;
 
-							Menu(window);
-
-							isPressed = exitTimer();
+							moveObject = typeSize;
+							typeSize = 'n';
+							break;
 						}
-						break;
+
+						default:
+							break;
 					}
 
-					default:
-						break;
+					switch (moveObject)
+					{
+						case 'r': {
+							if (Mouse::isButtonPressed(Mouse::Left))
+							{
+								cout << "intrat";
+
+								CreateMenu();
+								rectangle.move(Mouse::getPosition().x, Mouse::getPosition().y);
+								window.draw(rectangle);
+							}
+							break;
+						}
+
+						default:
+							break;
+					}
+					if (Keyboard::isKeyPressed(Keyboard::Escape) && !isPressed)
+					{
+						isPressed = true;
+
+						Menu(window);
+
+						//isPressed = exitTimer();
+					}
+					break;
 				}
+
+				default:
+					break;
+			}
 		}
+		window.draw(playerText);
 	}
 	return 0;
 }
