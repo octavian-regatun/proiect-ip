@@ -9,6 +9,18 @@ Color backgroundClr = Color(44, 62, 80);
 Color btnClr = Color(22, 160, 133);
 Color txtClr = Color(26, 188, 156);
 
+const int SHAPECTR = 10; //va trebui sa folosim vectori de shape-uri deoarece cand cream un nou shape si dam update la window sa tinem minte shape-urile
+
+//acestea sunt shape-urile cu care vom face morphing(more to be added in the future maybe?)
+CircleShape circle[SHAPECTR];
+RectangleShape rectangle[SHAPECTR];
+CircleShape triangle[SHAPECTR]; //se poate transforma din cerc in triunghi deoarece nu avem clasa pt triunghi
+
+//contoare de shape-uri
+int rectCtr = 0;
+int circleCtr = 0;
+int triangleCtr = 0;
+
 Font font, fontBold;
 
 sf::String playerInput;
@@ -65,12 +77,52 @@ struct menuBtns
 	Text text[10];
 };
 menuBtns Mbuttons[2]; //vectorul este pentru a separa butoanele in functie de meniul din care fac parte ex: Mbuttons[0] pentru toate butoanele din MainMenu
+void CreateMenuButtons(RenderWindow& window);
 void CreateImagesMenu(RenderWindow& window);
 void Menu(RenderWindow& window);
 bool isMousePressed(RenderWindow& window, RectangleShape collider);
 bool exitTimer(); //avem nevoie de timer deoarece cand dam esc si nu avem timer se va apela de mai multe ori exit-ul
 void Clamp(unsigned int max, unsigned int min, unsigned int& value);
+void DisplayShapes(RenderWindow& window);
+void RefreshCounterShapes();
 
+void CreateMenuButtons(RenderWindow& window)
+{
+	int length = 150;
+	int height = 50;
+
+	Button rectButton(window, btnClr, length, height, 200, window.getSize().y - 100);
+	rectButton.addText(window, txtClr, "RECTANGLE", font, 24);
+	Mbuttons[1].btns[0] = rectButton.getButton();
+	Mbuttons[1].text[0] = rectButton.getText();
+
+	Button circleButton(window, btnClr, length, height, 500, window.getSize().y - 100);
+	circleButton.addText(window, txtClr, "CIRCLE   ", font, 24); //sau mai exista susta de a pune spatii in plus ca sa se alinieze😎
+	Mbuttons[1].btns[1] = circleButton.getButton();
+	Mbuttons[1].text[1] = circleButton.getText();
+
+	Button triangleButton(window, btnClr, length, height, 800, window.getSize().y - 100);
+	triangleButton.addText(window, txtClr, "TRIANGLE", font, 24);
+	Mbuttons[1].btns[2] = triangleButton.getButton();
+	Mbuttons[1].text[2] = triangleButton.getText();
+
+	Mbuttons[1].counter = 3;
+}
+void RefreshCounterShapes()
+{
+	rectCtr = triangleCtr = circleCtr = 0;
+}
+void DisplayShapes(RenderWindow& window)
+{
+	for (int i = 0; i < rectCtr; i++)
+		window.draw(rectangle[i]);
+	for (int i = 0; i < circleCtr; i++)
+		window.draw(circle[i]);
+	for (int i = 0; i < triangleCtr; i++)
+		window.draw(triangle[i]);
+
+	window.display();
+}
 void Clamp(unsigned int max, unsigned int min, unsigned int& value)
 {
 	if (value > max)
@@ -95,9 +147,11 @@ bool isMousePressed(RenderWindow& window, RectangleShape collider)
 
 	return false;
 }
-
 void Menu(RenderWindow& window)
 {
+	//reinitializam shapeCounterurile cand ajungem iarasi in Menu
+	RefreshCounterShapes();
+
 	//background color
 	window.clear(backgroundClr);
 	menuCounter = 0;
@@ -132,25 +186,8 @@ void CreateImagesMenu(RenderWindow& window)
 {
 	window.clear(backgroundClr);
 	menuCounter = 1;
-	int length = 150;
-	int height = 50;
 
-	Button rectButton(window, btnClr, length, height, 200, 900);
-	rectButton.addText(window, txtClr, "RECTANGLE", font, 24);
-	Mbuttons[1].btns[0] = rectButton.getButton();
-	Mbuttons[1].text[0] = rectButton.getText();
-
-	Button circleButton(window, btnClr, length, height, 500, 900);
-	circleButton.addText(window, txtClr, "CIRCLE   ", font, 24); //sau mai exista susta de a pune spatii in plus ca sa se alinieze😎
-	Mbuttons[1].btns[1] = circleButton.getButton();
-	Mbuttons[1].text[1] = circleButton.getText();
-
-	Button triangleButton(window, btnClr, length, height, 800, 900);
-	triangleButton.addText(window, txtClr, "TRIANGLE", font, 24);
-	Mbuttons[1].btns[2] = triangleButton.getButton();
-	Mbuttons[1].text[2] = triangleButton.getText();
-
-	Mbuttons[1].counter = 3;
+	CreateMenuButtons(window);
 
 	window.display();
 }
@@ -163,7 +200,7 @@ int main()
 	sf::RenderWindow window(sf::VideoMode(width, height), "My bug");
 
 	if (!font.loadFromFile("DIN.ttf"))
-		cout << "ERROR, DIN FONT NOT LOADED";
+		cout << "ERROR, DIN FONT NOT LOADED"; //dam load la fonturile din fisier
 
 	if (!fontBold.loadFromFile("DINBold.ttf"))
 		cout << "ERROR, DINBold FONT NOT LOADED";
@@ -171,8 +208,9 @@ int main()
 	Menu(window);
 
 	bool isPressed = false;
-	char typeSize = 'n';
-	char moveObject = 'n'; //am pus n de la null
+
+	char shapeType = 'n';  // v-a trebui sa tinem cont ce shape construim(n de la null?)
+	char moveObject = 'n'; //sa stim ce piesa miscam
 
 	// run the program as long as the window is open
 	while (window.isOpen())
@@ -195,7 +233,8 @@ int main()
 			{
 				case 0: {
 
-					RectangleShape collider = Mbuttons[menuCounter].btns[0];
+					RectangleShape collider = Mbuttons[menuCounter].btns[0]; //butonul de createImage
+
 					if (isMousePressed(window, collider)) //check if mouse is pressed on the button
 					{
 						CreateImagesMenu(window);
@@ -213,23 +252,20 @@ int main()
 					RectangleShape circleBtn = Mbuttons[menuCounter].btns[1];
 					RectangleShape triangleBtn = Mbuttons[menuCounter].btns[2];
 
-					CircleShape circle;
-					RectangleShape rectangle;
-					CircleShape triangle; //se poate transforma din cerc in triunghi deoarece nu avem clasa pt triunghi
 					if (isMousePressed(window, rectangleBtn))
 					{
-						typeSize = 'r';
+						shapeType = 'r';
 					}
 					else if (isMousePressed(window, circleBtn))
 					{
-						typeSize = 'c';
+						shapeType = 'c';
 					}
 					else if (isMousePressed(window, triangleBtn))
 					{
-						typeSize = 't';
+						shapeType = 't';
 					}
 
-					switch (typeSize) //scuze pt atatea switch/if dar sincer nu stiu cum sa fac altcumva :)
+					switch (shapeType) //scuze pt atatea switch/if dar sincer nu stiu cum sa fac altcumva :)
 					{
 						case 'r': {
 
@@ -244,15 +280,16 @@ int main()
 							Clamp(height - 300, 10, h);
 
 							CreateImagesMenu(window);
-							rectangle.setSize(Vector2f(l, h));
-							rectangle.setOrigin(l / 2.f, h / 2.f);
-							rectangle.setPosition(width / 2.f, height / 2.f);
+							rectCtr++;
+							rectangle[rectCtr - 1].setSize(Vector2f(l, h));
+							rectangle[rectCtr - 1].setOrigin(l / 2.f, h / 2.f);
+							rectangle[rectCtr - 1].setPosition(width / 2.f, height / 2.f);
 
-							window.draw(rectangle);
+							window.draw(rectangle[rectCtr - 1]);
 							window.display();
 
-							moveObject = typeSize;
-							typeSize = 'n'; //la final reinitializam typeSize cu n pentru a finaliza procesul de creare
+							moveObject = shapeType;
+							shapeType = 'n'; //la final reinitializam shapeType cu n pentru a finaliza procesul de creare
 							break;
 						}
 						case 'c': {
@@ -265,15 +302,17 @@ int main()
 
 							CreateImagesMenu(window);
 
-							circle.setRadius(r);
-							circle.setOrigin(r, r);
-							circle.setPosition(width / 2.f, height / 2.f);
+							circleCtr++;
 
-							window.draw(circle);
+							circle[circleCtr - 1].setRadius(r);
+							circle[circleCtr - 1].setOrigin(r, r);
+							circle[circleCtr - 1].setPosition(width / 2.f, height / 2.f);
+
+							window.draw(circle[circleCtr - 1]);
 							window.display();
 
-							moveObject = typeSize;
-							typeSize = 'n';
+							moveObject = shapeType;
+							shapeType = 'n';
 							break;
 						}
 						case 't': {
@@ -285,16 +324,17 @@ int main()
 
 							CreateImagesMenu(window);
 
-							triangle.setRadius(l);
-							triangle.setPointCount(3);
-							triangle.setOrigin(l, l);
-							triangle.setPosition(width / 2.f, height / 2.f);
+							triangleCtr++;
+							triangle[triangleCtr - 1].setRadius(l);
+							triangle[triangleCtr - 1].setPointCount(3);
+							triangle[triangleCtr - 1].setOrigin(l, l);
+							triangle[triangleCtr - 1].setPosition(width / 2.f, height / 2.f);
 
-							window.draw(triangle);
+							window.draw(triangle[triangleCtr - 1]);
 							window.display();
 
-							moveObject = typeSize;
-							typeSize = 'n';
+							moveObject = shapeType;
+							shapeType = 'n';
 							break;
 						}
 
@@ -302,20 +342,239 @@ int main()
 							break;
 					}
 
-					switch (moveObject)
+					switch (moveObject) //aici se misca obiectul
 					{
 						case 'r': {
 							if (Mouse::isButtonPressed(Mouse::Left))
 							{
-								cout << "intrat";
+								window.clear(backgroundClr);
 
-								CreateMenu();
-								rectangle.move(Mouse::getPosition().x, Mouse::getPosition().y);
-								window.draw(rectangle);
+								unsigned int x = Mouse::getPosition(window).x;
+								unsigned int y = Mouse::getPosition(window).y;
+
+								if (x > width * 10) //e ceva bug in care din stanga se teleporteaza in dreapta?
+									x = 0;
+								if (y > height * 10)
+									y = 0;
+
+								//limitele in care se poate misca obietul
+								Clamp(width - rectangle[rectCtr - 1].getGlobalBounds().width + rectangle[rectCtr - 1].getLocalBounds().width / 2.f, rectangle[rectCtr - 1].getLocalBounds().width / 2.f, x);
+								Clamp(height - 200 - rectangle[rectCtr - 1].getGlobalBounds().height + rectangle[rectCtr - 1].getLocalBounds().height / 2.f, rectangle[rectCtr - 1].getLocalBounds().height / 2.f, y);
+
+								rectangle[rectCtr - 1].setPosition(x, y);
+								CreateMenuButtons(window);
+								DisplayShapes(window);
+							}
+							if (Keyboard::isKeyPressed(Keyboard::Q) && !isPressed) //q pentru cresterea in size
+							{
+								isPressed = true;
+								window.clear(backgroundClr);
+
+								unsigned int sizeX = rectangle[rectCtr - 1].getSize().x + 20;
+								unsigned int sizeY = rectangle[rectCtr - 1].getSize().y + 20;
+
+								if (sizeX >= width - 300 || sizeY >= width - 300) //acest if ne asigura ca nu dam resize cand height sau width este maxim,astfel evitam sa cream din dreptunghi patrat
+								{
+									isPressed = false;
+									break;
+								}
+
+								Clamp(width - 300, 10, sizeX);
+								Clamp(height - 300, 10, sizeY);
+
+								rectangle[rectCtr - 1].setSize(Vector2f(sizeX, sizeY));
+								rectangle[rectCtr - 1].setOrigin(rectangle[rectCtr - 1].getLocalBounds().width / 2.f, rectangle[rectCtr - 1].getLocalBounds().height / 2.f);
+
+								CreateMenuButtons(window);
+								DisplayShapes(window);
+
+								isPressed = exitTimer();
+							}
+							if (Keyboard::isKeyPressed(Keyboard::E) && !isPressed) //e pentru scaderea in size
+							{
+								isPressed = true;
+								window.clear(backgroundClr);
+
+								unsigned int sizeX = rectangle[rectCtr - 1].getSize().x - 20;
+								unsigned int sizeY = rectangle[rectCtr - 1].getSize().y - 20;
+
+								if (sizeX <= 20 || sizeY <= 20) //acest if ne asigura ca nu dam resize cand height sau width este minim,astfel evitam sa cream din dreptunghi patrat
+								{
+									isPressed = false;
+									break;
+								}
+
+								if (sizeX > width * 10) //e ceva bug in care size=0 ajunge la size=400000?
+									sizeX = 20;
+								if (sizeY > height * 10)
+									sizeY = 20;
+
+								Clamp(width - 300, 20, sizeX);
+								Clamp(height - 300, 20, sizeY);
+
+								rectangle[rectCtr - 1].setSize(Vector2f(sizeX, sizeY));
+								rectangle[rectCtr - 1].setOrigin(rectangle[rectCtr - 1].getLocalBounds().width / 2.f, rectangle[rectCtr - 1].getLocalBounds().height / 2.f);
+
+								CreateMenuButtons(window);
+								DisplayShapes(window);
+
+								isPressed = exitTimer();
+							}
+							if (Keyboard::isKeyPressed(Keyboard::R) && !isPressed) //r pentru rotatia acelor de ceasornic
+							{
+								isPressed = true;
+								window.clear(backgroundClr);
+
+								unsigned int angle = rectangle[rectCtr - 1].getRotation() + 10;
+
+								rectangle[rectCtr - 1].setRotation(angle);
+
+								rectangle[rectCtr - 1].setOrigin(rectangle[rectCtr - 1].getLocalBounds().width / 2.f, rectangle[rectCtr - 1].getLocalBounds().height / 2.f);
+
+								CreateMenuButtons(window);
+								DisplayShapes(window);
+
+								isPressed = exitTimer();
 							}
 							break;
 						}
+						case 'c': {
+							if (Mouse::isButtonPressed(Mouse::Left))
+							{
+								window.clear(backgroundClr);
 
+								unsigned int x = Mouse::getPosition(window).x;
+								unsigned int y = Mouse::getPosition(window).y;
+
+								if (x > width * 10) //e ceva bug in care din stanga se teleporteaza in dreapta?
+									x = 0;
+								if (y > height * 10)
+									y = 0;
+
+								Clamp(width - circle[circleCtr - 1].getGlobalBounds().width + circle[circleCtr - 1].getLocalBounds().width / 2.f, circle[circleCtr - 1].getLocalBounds().width / 2.f, x);
+								Clamp(height - 200 - circle[circleCtr - 1].getGlobalBounds().height + circle[circleCtr - 1].getLocalBounds().height / 2.f, circle[circleCtr - 1].getLocalBounds().height / 2.f, y);
+
+								circle[circleCtr - 1].setPosition(x, y);
+								CreateMenuButtons(window);
+								DisplayShapes(window);
+							}
+							if (Keyboard::isKeyPressed(Keyboard::Q) && !isPressed) //q pentru cresterea in size
+							{
+								isPressed = true;
+								window.clear(backgroundClr);
+
+								unsigned int r = circle[circleCtr - 1].getRadius() + 20;
+
+								Clamp(width / 3, 20, r);
+
+								circle[circleCtr - 1].setRadius(r);
+								circle[circleCtr - 1].setOrigin(r, r);
+
+								CreateMenuButtons(window);
+								DisplayShapes(window);
+
+								isPressed = exitTimer();
+							}
+							if (Keyboard::isKeyPressed(Keyboard::E) && !isPressed) //e pentru scaderea in size
+							{
+								isPressed = true;
+								window.clear(backgroundClr);
+
+								unsigned int r = circle[circleCtr - 1].getRadius() - 20;
+
+								if (r > height * 10)
+									r = 20;
+
+								Clamp(width / 3, 20, r);
+
+								circle[circleCtr - 1].setRadius(r);
+								circle[circleCtr - 1].setOrigin(r, r);
+
+								CreateMenuButtons(window);
+								DisplayShapes(window);
+
+								isPressed = exitTimer();
+							}
+							//presupun ca nu trebuie sa punem optiunea de a roti un cerc,nu?
+
+							break;
+						}
+						case 't': {
+							if (Mouse::isButtonPressed(Mouse::Left))
+							{
+								window.clear(backgroundClr);
+
+								unsigned int x = Mouse::getPosition(window).x;
+								unsigned int y = Mouse::getPosition(window).y;
+
+								if (x > width * 10) //e ceva bug in care din stanga se teleporteaza in dreapta?
+									x = 0;
+								if (y > height * 10)
+									y = 0;
+
+								Clamp(width - triangle[triangleCtr - 1].getGlobalBounds().width + triangle[triangleCtr - 1].getLocalBounds().width / 2.f, triangle[triangleCtr - 1].getLocalBounds().width / 2.f, x);
+								Clamp(height - 200 - triangle[triangleCtr - 1].getGlobalBounds().height + triangle[triangleCtr - 1].getLocalBounds().height / 2.f, triangle[triangleCtr - 1].getLocalBounds().height / 2.f, y);
+
+								triangle[triangleCtr - 1].setPosition(x, y);
+								CreateMenuButtons(window);
+								DisplayShapes(window);
+							}
+							if (Keyboard::isKeyPressed(Keyboard::Q) && !isPressed) //q pentru cresterea in size
+							{
+								isPressed = true;
+								window.clear(backgroundClr);
+
+								unsigned int r = triangle[triangleCtr - 1].getRadius() + 20;
+
+								Clamp(width / 3, 20, r);
+
+								triangle[triangleCtr - 1].setRadius(r);
+								triangle[triangleCtr - 1].setOrigin(r, r);
+
+								CreateMenuButtons(window);
+								DisplayShapes(window);
+
+								isPressed = exitTimer();
+							}
+							if (Keyboard::isKeyPressed(Keyboard::E) && !isPressed) //e pentru scaderea in size
+							{
+								isPressed = true;
+								window.clear(backgroundClr);
+
+								unsigned int r = triangle[triangleCtr - 1].getRadius() - 20;
+
+								if (r > height * 10)
+									r = 20;
+
+								Clamp(width / 3, 20, r);
+
+								triangle[triangleCtr - 1].setRadius(r);
+								triangle[triangleCtr - 1].setOrigin(r, r);
+
+								CreateMenuButtons(window);
+								DisplayShapes(window);
+
+								isPressed = exitTimer();
+							}
+							if (Keyboard::isKeyPressed(Keyboard::R) && !isPressed) //r pentru rotatia acelor de ceasornic
+							{
+								isPressed = true;
+								window.clear(backgroundClr);
+
+								unsigned int angle = triangle[triangleCtr - 1].getRotation() + 10;
+								unsigned int r = triangle[triangleCtr - 1].getRadius();
+
+								triangle[triangleCtr - 1].setOrigin(r, r);
+								triangle[triangleCtr - 1].setRotation(angle);
+
+								CreateMenuButtons(window);
+								DisplayShapes(window);
+
+								isPressed = exitTimer();
+							}
+
+							break;
+						}
 						default:
 							break;
 					}
@@ -325,7 +584,7 @@ int main()
 
 						Menu(window);
 
-						//isPressed = exitTimer();
+						isPressed = exitTimer();
 					}
 					break;
 				}
