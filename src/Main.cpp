@@ -1,3 +1,4 @@
+#include "lib/MyFont.hpp"
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include <string>
@@ -20,8 +21,6 @@ CircleShape triangle[SHAPECTR]; //se poate transforma din cerc in triunghi deoar
 int rectCtr = 0;
 int circleCtr = 0;
 int triangleCtr = 0;
-
-Font font, fontBold;
 
 sf::String playerInput;
 sf::Text playerText;
@@ -92,17 +91,17 @@ void CreateMenuButtons(RenderWindow& window)
 	int height = 50;
 
 	Button rectButton(window, btnClr, length, height, 200, window.getSize().y - 100);
-	rectButton.addText(window, txtClr, "RECTANGLE", font, 24);
+	rectButton.addText(window, txtClr, "RECTANGLE", MyFont::font, 24);
 	Mbuttons[1].btns[0] = rectButton.getButton();
 	Mbuttons[1].text[0] = rectButton.getText();
 
 	Button circleButton(window, btnClr, length, height, 500, window.getSize().y - 100);
-	circleButton.addText(window, txtClr, "CIRCLE   ", font, 24); //sau mai exista susta de a pune spatii in plus ca sa se alinieze😎
+	circleButton.addText(window, txtClr, "CIRCLE   ", MyFont::font, 24); //sau mai exista susta de a pune spatii in plus ca sa se alinieze😎
 	Mbuttons[1].btns[1] = circleButton.getButton();
 	Mbuttons[1].text[1] = circleButton.getText();
 
 	Button triangleButton(window, btnClr, length, height, 800, window.getSize().y - 100);
-	triangleButton.addText(window, txtClr, "TRIANGLE", font, 24);
+	triangleButton.addText(window, txtClr, "TRIANGLE", MyFont::font, 24);
 	Mbuttons[1].btns[2] = triangleButton.getButton();
 	Mbuttons[1].text[2] = triangleButton.getText();
 
@@ -163,7 +162,7 @@ void Menu(RenderWindow& window)
 	Text title;
 
 	title.setString("MENU");
-	title.setFont(fontBold);
+	title.setFont(MyFont::fontBold);
 	title.setCharacterSize(70);
 	title.setPosition(x - 100, 100);
 	title.setFillColor(txtClr);
@@ -174,7 +173,7 @@ void Menu(RenderWindow& window)
 	int height = 50;
 
 	Button createButton(window, btnClr, length, height, x, y);
-	createButton.addText(window, txtClr, "CREATE IMAGE", font, 24); //ca textul sa se incadreze in centrul butonului ar trebui sa schimbi valorile length,height sau chSize(24)
+	createButton.addText(window, txtClr, "CREATE IMAGE", MyFont::font, 24); //ca textul sa se incadreze in centrul butonului ar trebui sa schimbi valorile length,height sau chSize(24)
 
 	Mbuttons[0].btns[0] = createButton.getButton();
 	Mbuttons[0].text[0] = createButton.getText();
@@ -199,11 +198,7 @@ int main()
 
 	sf::RenderWindow window(sf::VideoMode(width, height), "My bug");
 
-	if (!font.loadFromFile("DIN.ttf"))
-		cout << "ERROR, DIN FONT NOT LOADED"; //dam load la fonturile din fisier
-
-	if (!fontBold.loadFromFile("DINBold.ttf"))
-		cout << "ERROR, DINBold FONT NOT LOADED";
+	MyFont::load();
 
 	Menu(window);
 
