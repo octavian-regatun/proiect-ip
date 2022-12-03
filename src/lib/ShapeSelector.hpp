@@ -1,6 +1,8 @@
-// #include <SFML/Graphics.hpp>
+#include <SFML/Graphics.hpp>
 
-struct MyShapes
+namespace my
+{
+struct Shapes
 {
 	//contoare de shape-uri
 	int rectanglesCount, circlesCount, trianglesCount;
@@ -11,7 +13,7 @@ struct MyShapes
 	sf::CircleShape* triangles;
 };
 
-enum class MyShapeType
+enum class ShapeType
 {
 	Nothing,
 	Rectangle,
@@ -19,13 +21,14 @@ enum class MyShapeType
 	Triangle
 };
 
-class MyShapeSelector
+class ShapeSelector
 {
 public:
-	static MyShapes shapes;
-	static MyShapeType selectedShape;
+	static Shapes shapes;
+	static ShapeType selectedShape;
 	// sa stim ce piesa miscam
-	static MyShapeType currentMovingShape;
+	static ShapeType currentMovingShape;
 	static void displayMenu(sf::RenderWindow& window);
 	static void refreshShapesCount();
 };
+}

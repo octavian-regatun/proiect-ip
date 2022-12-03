@@ -1,8 +1,10 @@
-#include "MyButton.hpp"
+#include "Button.hpp"
 #include "AllButtons.hpp"
 #include <SFML/Graphics.hpp>
 
-MyButton::MyButton(sf::RenderWindow& window, sf::Color fillColor, int length, int height, int x, int y)
+namespace my
+{
+Button::Button(sf::RenderWindow& window, sf::Color fillColor, int length, int height, int x, int y)
 {
 	button.setSize(sf::Vector2f(length, height));
 	button.setOrigin(length / 2, height / 2);
@@ -12,7 +14,7 @@ MyButton::MyButton(sf::RenderWindow& window, sf::Color fillColor, int length, in
 	window.draw(button);
 }
 
-void MyButton::setText(sf::RenderWindow& window, sf::Color color, std::string txt, sf::Font font, int chSize)
+void Button::setText(sf::RenderWindow& window, sf::Color color, std::string txt, sf::Font font, int chSize)
 {
 	text.setString(txt);
 	text.setFont(font);
@@ -28,13 +30,14 @@ void MyButton::setText(sf::RenderWindow& window, sf::Color color, std::string tx
 	window.draw(text);
 }
 
-void MyButton::setOnClick(std::function<void()> onClick)
+void Button::setOnClick(std::function<void()> onClick)
 {
 	this->onClick = onClick;
 	my::AllButtons::buttons.push_back(*this);
 }
 
-std::function<void()> MyButton::getOnClick()
+std::function<void()> Button::getOnClick()
 {
 	return onClick;
+}
 }

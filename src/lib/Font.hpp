@@ -1,8 +1,11 @@
 #include <SFML/Graphics.hpp>
 
-class MyFont
+namespace my
+{
+class Font
 {
 public:
 	static sf::Font font, fontBold;
 	static void load();
 };
+}

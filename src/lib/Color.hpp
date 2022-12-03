@@ -1,6 +1,8 @@
 #include <SFML/Graphics.hpp>
 
-class MyColor
+namespace my
+{
+class Color
 {
 public:
 	static sf::Color backgroundColor;
@@ -9,3 +11,4 @@ public:
 	static sf::Color* colors;
 	static int colorsCount;
 };
+}

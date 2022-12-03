@@ -1,4 +1,6 @@
-enum MyScreenEnum
+namespace my
+{
+enum ScreenType
 {
 	Start,
 	FirstImage,
@@ -7,11 +9,12 @@ enum MyScreenEnum
 	End
 };
 
-class MyScreen
+class Screen
 {
 public:
-	static MyScreenEnum currentScreen;
+	static ScreenType currentScreen;
 	static void nextScreen();
 	static void previousScreen();
-	static void goToScreen(MyScreenEnum screen);
+	static void goToScreen(ScreenType screen);
 };
+}

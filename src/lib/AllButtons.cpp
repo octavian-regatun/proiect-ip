@@ -1,9 +1,9 @@
 #include "AllButtons.hpp"
-#include "MyButton.hpp"
+#include "Button.hpp"
 
 namespace my
 {
-std::vector<MyButton> AllButtons::buttons = std::vector<MyButton>();
+std::vector<Button> AllButtons::buttons = std::vector<Button>();
 
 void AllButtons::handleEvents(sf::RenderWindow& window, sf::Event& ev)
 {

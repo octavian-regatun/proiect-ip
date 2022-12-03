@@ -1,10 +1,12 @@
-#include "MyFont.hpp"
+#include "Font.hpp"
 #include <SFML/Graphics.hpp>
 
-sf::Font MyFont::font = sf::Font();
-sf::Font MyFont::fontBold = sf::Font();
+namespace my
+{
+sf::Font Font::font = sf::Font();
+sf::Font Font::fontBold = sf::Font();
 
-void MyFont::load()
+void Font::load()
 {
 	//dam load la fonturile din fisier
 	if (!font.loadFromFile("DIN.ttf"))
@@ -12,4 +14,5 @@ void MyFont::load()
 
 	if (!fontBold.loadFromFile("DINBold.ttf"))
 		std::cout << "ERROR, DINBold FONT NOT LOADED";
+}
 }
