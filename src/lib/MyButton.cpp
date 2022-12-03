@@ -1,4 +1,5 @@
 #include "MyButton.hpp"
+#include "AllButtons.hpp"
 #include <SFML/Graphics.hpp>
 
 MyButton::MyButton(sf::RenderWindow& window, sf::Color fillColor, int length, int height, int x, int y)
@@ -7,6 +8,7 @@ MyButton::MyButton(sf::RenderWindow& window, sf::Color fillColor, int length, in
 	button.setOrigin(length / 2, height / 2);
 	button.setPosition(x, y);
 	button.setFillColor(fillColor);
+
 	window.draw(button);
 }
 
@@ -26,16 +28,13 @@ void MyButton::setText(sf::RenderWindow& window, sf::Color color, std::string tx
 	window.draw(text);
 }
 
-void MyButton::onClick(sf::RenderWindow& window, sf::Event& ev, std::function<void()> func)
+void MyButton::setOnClick(std::function<void()> onClick)
 {
-	if (button.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(window))))
-	{
-		if (ev.type == sf::Event::MouseButtonPressed)
-		{
-			if (ev.mouseButton.button == sf::Mouse::Left)
-			{
-				func();
-			}
-		}
-	}
+	this->onClick = onClick;
+	my::AllButtons::buttons.push_back(*this);
+}
+
+std::function<void()> MyButton::getOnClick()
+{
+	return onClick;
 }

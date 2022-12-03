@@ -1,3 +1,4 @@
+#include "lib/AllButtons.hpp"
 #include "lib/MyButton.hpp"
 #include "lib/MyColor.hpp"
 #include "lib/MyFont.hpp"
@@ -20,7 +21,6 @@ struct menuBtns
 	Text text[10];
 };
 menuBtns Mbuttons[2]; //vectorul este pentru a separa butoanele in functie de meniul din care fac parte ex: Mbuttons[0] pentru toate butoanele din MainMenu
-void CreateMenuButtons(RenderWindow& window);
 void CreateImagesMenu(RenderWindow& window);
 void Menu(RenderWindow& window);
 bool isMousePressed(RenderWindow& window, RectangleShape collider);
@@ -28,36 +28,13 @@ bool exitTimer(); //avem nevoie de timer deoarece cand dam esc si nu avem timer 
 void Clamp(unsigned int max, unsigned int min, unsigned int& value);
 void DisplayShapes(RenderWindow& window);
 
-void CreateMenuButtons(RenderWindow& window)
-{
-	int length = 150;
-	int height = 50;
-
-	MyButton rectButton(window, MyColor::buttonColor, length, height, 200, window.getSize().y - 100);
-	rectButton.setText(window, MyColor::textColor, "RECTANGLE", MyFont::font, 24);
-	Mbuttons[1].btns[0] = rectButton.button;
-	Mbuttons[1].text[0] = rectButton.text;
-
-	MyButton circleButton(window, MyColor::buttonColor, length, height, 500, window.getSize().y - 100);
-	circleButton.setText(window, MyColor::textColor, "CIRCLE   ", MyFont::font, 24); //sau mai exista susta de a pune spatii in plus ca sa se alinieze😎
-	Mbuttons[1].btns[1] = circleButton.button;
-	Mbuttons[1].text[1] = circleButton.text;
-
-	MyButton triangleButton(window, MyColor::buttonColor, length, height, 800, window.getSize().y - 100);
-	triangleButton.setText(window, MyColor::textColor, "TRIANGLE", MyFont::font, 24);
-	Mbuttons[1].btns[2] = triangleButton.button;
-	Mbuttons[1].text[2] = triangleButton.text;
-
-	Mbuttons[1].counter = 3;
-}
-
 void DisplayShapes(RenderWindow& window)
 {
-	for (int i = 0; i < MyShapeSelector::shapes.rectangleCount; i++)
+	for (int i = 0; i < MyShapeSelector::shapes.rectanglesCount; i++)
 		window.draw(MyShapeSelector::shapes.rectangles[i]);
-	for (int i = 0; i < MyShapeSelector::shapes.circleCount; i++)
+	for (int i = 0; i < MyShapeSelector::shapes.circlesCount; i++)
 		window.draw(MyShapeSelector::shapes.circles[i]);
-	for (int i = 0; i < MyShapeSelector::shapes.triangleCount; i++)
+	for (int i = 0; i < MyShapeSelector::shapes.trianglesCount; i++)
 		window.draw(MyShapeSelector::shapes.triangles[i]);
 
 	window.display();
@@ -126,7 +103,7 @@ void CreateImagesMenu(RenderWindow& window)
 	window.clear(MyColor::backgroundColor);
 	MyScreen::goToScreen(MyScreenEnum::FirstImage);
 
-	CreateMenuButtons(window);
+	MyShapeSelector::displayMenu(window);
 
 	window.display();
 }
@@ -150,6 +127,7 @@ int main()
 		sf::Event event;
 		while (window.pollEvent(event))
 		{
+			my::AllButtons::handleEvents(window, event);
 			// "close requested" event: we close the window
 			switch (event.type)
 			{
@@ -160,9 +138,10 @@ int main()
 				default:
 					break;
 			}
+
 			switch (MyScreen::currentScreen) //butoanele vor functiona in functie de meniul curent
 			{
-				case 0: {
+				case MyScreenEnum::Start: {
 
 					RectangleShape collider = Mbuttons[MyScreen::currentScreen].btns[0]; //butonul de createImage
 
@@ -178,7 +157,7 @@ int main()
 
 					break;
 				}
-				case 1: {
+				case MyScreenEnum::FirstImage: {
 					RectangleShape rectangleBtn = Mbuttons[MyScreen::currentScreen].btns[0];
 					RectangleShape circleBtn = Mbuttons[MyScreen::currentScreen].btns[1];
 					RectangleShape triangleBtn = Mbuttons[MyScreen::currentScreen].btns[2];
@@ -211,12 +190,12 @@ int main()
 							Clamp(height - 300, 10, h);
 
 							CreateImagesMenu(window);
-							MyShapeSelector::shapes.rectangleCount++;
-							MyShapeSelector::shapes.rectangles[MyShapeSelector::shapes.rectangleCount - 1].setSize(Vector2f(l, h));
-							MyShapeSelector::shapes.rectangles[MyShapeSelector::shapes.rectangleCount - 1].setOrigin(l / 2.f, h / 2.f);
-							MyShapeSelector::shapes.rectangles[MyShapeSelector::shapes.rectangleCount - 1].setPosition(width / 2.f, height / 2.f);
+							MyShapeSelector::shapes.rectanglesCount++;
+							MyShapeSelector::shapes.rectangles[MyShapeSelector::shapes.rectanglesCount - 1].setSize(Vector2f(l, h));
+							MyShapeSelector::shapes.rectangles[MyShapeSelector::shapes.rectanglesCount - 1].setOrigin(l / 2.f, h / 2.f);
+							MyShapeSelector::shapes.rectangles[MyShapeSelector::shapes.rectanglesCount - 1].setPosition(width / 2.f, height / 2.f);
 
-							window.draw(MyShapeSelector::shapes.rectangles[MyShapeSelector::shapes.rectangleCount - 1]);
+							window.draw(MyShapeSelector::shapes.rectangles[MyShapeSelector::shapes.rectanglesCount - 1]);
 							window.display();
 
 							MyShapeSelector::currentMovingShape = MyShapeSelector::selectedShape;
@@ -233,13 +212,13 @@ int main()
 
 							CreateImagesMenu(window);
 
-							MyShapeSelector::shapes.circleCount++;
+							MyShapeSelector::shapes.circlesCount++;
 
-							MyShapeSelector::shapes.circles[MyShapeSelector::shapes.circleCount - 1].setRadius(r);
-							MyShapeSelector::shapes.circles[MyShapeSelector::shapes.circleCount - 1].setOrigin(r, r);
-							MyShapeSelector::shapes.circles[MyShapeSelector::shapes.circleCount - 1].setPosition(width / 2.f, height / 2.f);
+							MyShapeSelector::shapes.circles[MyShapeSelector::shapes.circlesCount - 1].setRadius(r);
+							MyShapeSelector::shapes.circles[MyShapeSelector::shapes.circlesCount - 1].setOrigin(r, r);
+							MyShapeSelector::shapes.circles[MyShapeSelector::shapes.circlesCount - 1].setPosition(width / 2.f, height / 2.f);
 
-							window.draw(MyShapeSelector::shapes.circles[MyShapeSelector::shapes.circleCount - 1]);
+							window.draw(MyShapeSelector::shapes.circles[MyShapeSelector::shapes.circlesCount - 1]);
 							window.display();
 
 							MyShapeSelector::currentMovingShape = MyShapeSelector::selectedShape;
@@ -255,13 +234,13 @@ int main()
 
 							CreateImagesMenu(window);
 
-							MyShapeSelector::shapes.triangleCount++;
-							MyShapeSelector::shapes.triangles[MyShapeSelector::shapes.triangleCount - 1].setRadius(l);
-							MyShapeSelector::shapes.triangles[MyShapeSelector::shapes.triangleCount - 1].setPointCount(3);
-							MyShapeSelector::shapes.triangles[MyShapeSelector::shapes.triangleCount - 1].setOrigin(l, l);
-							MyShapeSelector::shapes.triangles[MyShapeSelector::shapes.triangleCount - 1].setPosition(width / 2.f, height / 2.f);
+							MyShapeSelector::shapes.trianglesCount++;
+							MyShapeSelector::shapes.triangles[MyShapeSelector::shapes.trianglesCount - 1].setRadius(l);
+							MyShapeSelector::shapes.triangles[MyShapeSelector::shapes.trianglesCount - 1].setPointCount(3);
+							MyShapeSelector::shapes.triangles[MyShapeSelector::shapes.trianglesCount - 1].setOrigin(l, l);
+							MyShapeSelector::shapes.triangles[MyShapeSelector::shapes.trianglesCount - 1].setPosition(width / 2.f, height / 2.f);
 
-							window.draw(MyShapeSelector::shapes.triangles[MyShapeSelector::shapes.circleCount - 1]);
+							window.draw(MyShapeSelector::shapes.triangles[MyShapeSelector::shapes.circlesCount - 1]);
 							window.display();
 
 							MyShapeSelector::currentMovingShape = MyShapeSelector::selectedShape;
@@ -289,11 +268,11 @@ int main()
 									y = 0;
 
 								//limitele in care se poate misca obietul
-								Clamp(width - MyShapeSelector::shapes.rectangles[MyShapeSelector::shapes.rectangleCount - 1].getGlobalBounds().width + MyShapeSelector::shapes.rectangles[MyShapeSelector::shapes.rectangleCount - 1].getLocalBounds().width / 2.f, MyShapeSelector::shapes.rectangles[MyShapeSelector::shapes.rectangleCount - 1].getLocalBounds().width / 2.f, x);
-								Clamp(height - 200 - MyShapeSelector::shapes.rectangles[MyShapeSelector::shapes.rectangleCount - 1].getGlobalBounds().height + MyShapeSelector::shapes.rectangles[MyShapeSelector::shapes.rectangleCount - 1].getLocalBounds().height / 2.f, MyShapeSelector::shapes.rectangles[MyShapeSelector::shapes.rectangleCount - 1].getLocalBounds().height / 2.f, y);
+								Clamp(width - MyShapeSelector::shapes.rectangles[MyShapeSelector::shapes.rectanglesCount - 1].getGlobalBounds().width + MyShapeSelector::shapes.rectangles[MyShapeSelector::shapes.rectanglesCount - 1].getLocalBounds().width / 2.f, MyShapeSelector::shapes.rectangles[MyShapeSelector::shapes.rectanglesCount - 1].getLocalBounds().width / 2.f, x);
+								Clamp(height - 200 - MyShapeSelector::shapes.rectangles[MyShapeSelector::shapes.rectanglesCount - 1].getGlobalBounds().height + MyShapeSelector::shapes.rectangles[MyShapeSelector::shapes.rectanglesCount - 1].getLocalBounds().height / 2.f, MyShapeSelector::shapes.rectangles[MyShapeSelector::shapes.rectanglesCount - 1].getLocalBounds().height / 2.f, y);
 
-								MyShapeSelector::shapes.rectangles[MyShapeSelector::shapes.rectangleCount - 1].setPosition(x, y);
-								CreateMenuButtons(window);
+								MyShapeSelector::shapes.rectangles[MyShapeSelector::shapes.rectanglesCount - 1].setPosition(x, y);
+								MyShapeSelector::displayMenu(window);
 								DisplayShapes(window);
 							}
 							if (Keyboard::isKeyPressed(Keyboard::Q) && !isPressed) //q pentru cresterea in size
@@ -301,8 +280,8 @@ int main()
 								isPressed = true;
 								window.clear(MyColor::backgroundColor);
 
-								unsigned int sizeX = MyShapeSelector::shapes.rectangles[MyShapeSelector::shapes.rectangleCount - 1].getSize().x + 20;
-								unsigned int sizeY = MyShapeSelector::shapes.rectangles[MyShapeSelector::shapes.rectangleCount - 1].getSize().y + 20;
+								unsigned int sizeX = MyShapeSelector::shapes.rectangles[MyShapeSelector::shapes.rectanglesCount - 1].getSize().x + 20;
+								unsigned int sizeY = MyShapeSelector::shapes.rectangles[MyShapeSelector::shapes.rectanglesCount - 1].getSize().y + 20;
 
 								if (sizeX >= width - 300 || sizeY >= width - 300) //acest if ne asigura ca nu dam resize cand height sau width este maxim,astfel evitam sa cream din dreptunghi patrat
 								{
@@ -313,10 +292,10 @@ int main()
 								Clamp(width - 300, 10, sizeX);
 								Clamp(height - 300, 10, sizeY);
 
-								MyShapeSelector::shapes.rectangles[MyShapeSelector::shapes.rectangleCount - 1].setSize(Vector2f(sizeX, sizeY));
-								MyShapeSelector::shapes.rectangles[MyShapeSelector::shapes.rectangleCount - 1].setOrigin(MyShapeSelector::shapes.rectangles[MyShapeSelector::shapes.rectangleCount - 1].getLocalBounds().width / 2.f, MyShapeSelector::shapes.rectangles[MyShapeSelector::shapes.rectangleCount - 1].getLocalBounds().height / 2.f);
+								MyShapeSelector::shapes.rectangles[MyShapeSelector::shapes.rectanglesCount - 1].setSize(Vector2f(sizeX, sizeY));
+								MyShapeSelector::shapes.rectangles[MyShapeSelector::shapes.rectanglesCount - 1].setOrigin(MyShapeSelector::shapes.rectangles[MyShapeSelector::shapes.rectanglesCount - 1].getLocalBounds().width / 2.f, MyShapeSelector::shapes.rectangles[MyShapeSelector::shapes.rectanglesCount - 1].getLocalBounds().height / 2.f);
 
-								CreateMenuButtons(window);
+								MyShapeSelector::displayMenu(window);
 								DisplayShapes(window);
 
 								isPressed = exitTimer();
@@ -326,8 +305,8 @@ int main()
 								isPressed = true;
 								window.clear(MyColor::backgroundColor);
 
-								unsigned int sizeX = MyShapeSelector::shapes.rectangles[MyShapeSelector::shapes.rectangleCount - 1].getSize().x - 20;
-								unsigned int sizeY = MyShapeSelector::shapes.rectangles[MyShapeSelector::shapes.rectangleCount - 1].getSize().y - 20;
+								unsigned int sizeX = MyShapeSelector::shapes.rectangles[MyShapeSelector::shapes.rectanglesCount - 1].getSize().x - 20;
+								unsigned int sizeY = MyShapeSelector::shapes.rectangles[MyShapeSelector::shapes.rectanglesCount - 1].getSize().y - 20;
 
 								if (sizeX <= 20 || sizeY <= 20) //acest if ne asigura ca nu dam resize cand height sau width este minim,astfel evitam sa cream din dreptunghi patrat
 								{
@@ -343,10 +322,10 @@ int main()
 								Clamp(width - 300, 20, sizeX);
 								Clamp(height - 300, 20, sizeY);
 
-								MyShapeSelector::shapes.rectangles[MyShapeSelector::shapes.rectangleCount - 1].setSize(Vector2f(sizeX, sizeY));
-								MyShapeSelector::shapes.rectangles[MyShapeSelector::shapes.rectangleCount - 1].setOrigin(MyShapeSelector::shapes.rectangles[MyShapeSelector::shapes.rectangleCount - 1].getLocalBounds().width / 2.f, MyShapeSelector::shapes.rectangles[MyShapeSelector::shapes.rectangleCount - 1].getLocalBounds().height / 2.f);
+								MyShapeSelector::shapes.rectangles[MyShapeSelector::shapes.rectanglesCount - 1].setSize(Vector2f(sizeX, sizeY));
+								MyShapeSelector::shapes.rectangles[MyShapeSelector::shapes.rectanglesCount - 1].setOrigin(MyShapeSelector::shapes.rectangles[MyShapeSelector::shapes.rectanglesCount - 1].getLocalBounds().width / 2.f, MyShapeSelector::shapes.rectangles[MyShapeSelector::shapes.rectanglesCount - 1].getLocalBounds().height / 2.f);
 
-								CreateMenuButtons(window);
+								MyShapeSelector::displayMenu(window);
 								DisplayShapes(window);
 
 								isPressed = exitTimer();
@@ -356,13 +335,13 @@ int main()
 								isPressed = true;
 								window.clear(MyColor::backgroundColor);
 
-								unsigned int angle = MyShapeSelector::shapes.rectangles[MyShapeSelector::shapes.rectangleCount - 1].getRotation() + 10;
+								unsigned int angle = MyShapeSelector::shapes.rectangles[MyShapeSelector::shapes.rectanglesCount - 1].getRotation() + 10;
 
-								MyShapeSelector::shapes.rectangles[MyShapeSelector::shapes.rectangleCount - 1].setRotation(angle);
+								MyShapeSelector::shapes.rectangles[MyShapeSelector::shapes.rectanglesCount - 1].setRotation(angle);
 
-								MyShapeSelector::shapes.rectangles[MyShapeSelector::shapes.rectangleCount - 1].setOrigin(MyShapeSelector::shapes.rectangles[MyShapeSelector::shapes.rectangleCount - 1].getLocalBounds().width / 2.f, MyShapeSelector::shapes.rectangles[MyShapeSelector::shapes.rectangleCount - 1].getLocalBounds().height / 2.f);
+								MyShapeSelector::shapes.rectangles[MyShapeSelector::shapes.rectanglesCount - 1].setOrigin(MyShapeSelector::shapes.rectangles[MyShapeSelector::shapes.rectanglesCount - 1].getLocalBounds().width / 2.f, MyShapeSelector::shapes.rectangles[MyShapeSelector::shapes.rectanglesCount - 1].getLocalBounds().height / 2.f);
 
-								CreateMenuButtons(window);
+								MyShapeSelector::displayMenu(window);
 								DisplayShapes(window);
 
 								isPressed = exitTimer();
@@ -382,11 +361,11 @@ int main()
 								if (y > height * 10)
 									y = 0;
 
-								Clamp(width - MyShapeSelector::shapes.circles[MyShapeSelector::shapes.circleCount - 1].getGlobalBounds().width + MyShapeSelector::shapes.circles[MyShapeSelector::shapes.circleCount - 1].getLocalBounds().width / 2.f, MyShapeSelector::shapes.circles[MyShapeSelector::shapes.circleCount - 1].getLocalBounds().width / 2.f, x);
-								Clamp(height - 200 - MyShapeSelector::shapes.circles[MyShapeSelector::shapes.circleCount - 1].getGlobalBounds().height + MyShapeSelector::shapes.circles[MyShapeSelector::shapes.circleCount - 1].getLocalBounds().height / 2.f, MyShapeSelector::shapes.circles[MyShapeSelector::shapes.circleCount - 1].getLocalBounds().height / 2.f, y);
+								Clamp(width - MyShapeSelector::shapes.circles[MyShapeSelector::shapes.circlesCount - 1].getGlobalBounds().width + MyShapeSelector::shapes.circles[MyShapeSelector::shapes.circlesCount - 1].getLocalBounds().width / 2.f, MyShapeSelector::shapes.circles[MyShapeSelector::shapes.circlesCount - 1].getLocalBounds().width / 2.f, x);
+								Clamp(height - 200 - MyShapeSelector::shapes.circles[MyShapeSelector::shapes.circlesCount - 1].getGlobalBounds().height + MyShapeSelector::shapes.circles[MyShapeSelector::shapes.circlesCount - 1].getLocalBounds().height / 2.f, MyShapeSelector::shapes.circles[MyShapeSelector::shapes.circlesCount - 1].getLocalBounds().height / 2.f, y);
 
-								MyShapeSelector::shapes.circles[MyShapeSelector::shapes.circleCount - 1].setPosition(x, y);
-								CreateMenuButtons(window);
+								MyShapeSelector::shapes.circles[MyShapeSelector::shapes.circlesCount - 1].setPosition(x, y);
+								MyShapeSelector::displayMenu(window);
 								DisplayShapes(window);
 							}
 							if (Keyboard::isKeyPressed(Keyboard::Q) && !isPressed) //q pentru cresterea in size
@@ -394,14 +373,14 @@ int main()
 								isPressed = true;
 								window.clear(MyColor::backgroundColor);
 
-								unsigned int r = MyShapeSelector::shapes.circles[MyShapeSelector::shapes.circleCount - 1].getRadius() + 20;
+								unsigned int r = MyShapeSelector::shapes.circles[MyShapeSelector::shapes.circlesCount - 1].getRadius() + 20;
 
 								Clamp(width / 3, 20, r);
 
-								MyShapeSelector::shapes.circles[MyShapeSelector::shapes.circleCount - 1].setRadius(r);
-								MyShapeSelector::shapes.circles[MyShapeSelector::shapes.circleCount - 1].setOrigin(r, r);
+								MyShapeSelector::shapes.circles[MyShapeSelector::shapes.circlesCount - 1].setRadius(r);
+								MyShapeSelector::shapes.circles[MyShapeSelector::shapes.circlesCount - 1].setOrigin(r, r);
 
-								CreateMenuButtons(window);
+								MyShapeSelector::displayMenu(window);
 								DisplayShapes(window);
 
 								isPressed = exitTimer();
@@ -411,17 +390,17 @@ int main()
 								isPressed = true;
 								window.clear(MyColor::backgroundColor);
 
-								unsigned int r = MyShapeSelector::shapes.circles[MyShapeSelector::shapes.circleCount - 1].getRadius() - 20;
+								unsigned int r = MyShapeSelector::shapes.circles[MyShapeSelector::shapes.circlesCount - 1].getRadius() - 20;
 
 								if (r > height * 10)
 									r = 20;
 
 								Clamp(width / 3, 20, r);
 
-								MyShapeSelector::shapes.circles[MyShapeSelector::shapes.circleCount - 1].setRadius(r);
-								MyShapeSelector::shapes.circles[MyShapeSelector::shapes.circleCount - 1].setOrigin(r, r);
+								MyShapeSelector::shapes.circles[MyShapeSelector::shapes.circlesCount - 1].setRadius(r);
+								MyShapeSelector::shapes.circles[MyShapeSelector::shapes.circlesCount - 1].setOrigin(r, r);
 
-								CreateMenuButtons(window);
+								MyShapeSelector::displayMenu(window);
 								DisplayShapes(window);
 
 								isPressed = exitTimer();
@@ -443,11 +422,11 @@ int main()
 								if (y > height * 10)
 									y = 0;
 
-								Clamp(width - MyShapeSelector::shapes.triangles[MyShapeSelector::shapes.triangleCount - 1].getGlobalBounds().width + MyShapeSelector::shapes.triangles[MyShapeSelector::shapes.triangleCount - 1].getLocalBounds().width / 2.f, MyShapeSelector::shapes.triangles[MyShapeSelector::shapes.triangleCount - 1].getLocalBounds().width / 2.f, x);
-								Clamp(height - 200 - MyShapeSelector::shapes.triangles[MyShapeSelector::shapes.triangleCount - 1].getGlobalBounds().height + MyShapeSelector::shapes.triangles[MyShapeSelector::shapes.triangleCount - 1].getLocalBounds().height / 2.f, MyShapeSelector::shapes.triangles[MyShapeSelector::shapes.triangleCount - 1].getLocalBounds().height / 2.f, y);
+								Clamp(width - MyShapeSelector::shapes.triangles[MyShapeSelector::shapes.trianglesCount - 1].getGlobalBounds().width + MyShapeSelector::shapes.triangles[MyShapeSelector::shapes.trianglesCount - 1].getLocalBounds().width / 2.f, MyShapeSelector::shapes.triangles[MyShapeSelector::shapes.trianglesCount - 1].getLocalBounds().width / 2.f, x);
+								Clamp(height - 200 - MyShapeSelector::shapes.triangles[MyShapeSelector::shapes.trianglesCount - 1].getGlobalBounds().height + MyShapeSelector::shapes.triangles[MyShapeSelector::shapes.trianglesCount - 1].getLocalBounds().height / 2.f, MyShapeSelector::shapes.triangles[MyShapeSelector::shapes.trianglesCount - 1].getLocalBounds().height / 2.f, y);
 
-								MyShapeSelector::shapes.triangles[MyShapeSelector::shapes.triangleCount - 1].setPosition(x, y);
-								CreateMenuButtons(window);
+								MyShapeSelector::shapes.triangles[MyShapeSelector::shapes.trianglesCount - 1].setPosition(x, y);
+								MyShapeSelector::displayMenu(window);
 								DisplayShapes(window);
 							}
 							if (Keyboard::isKeyPressed(Keyboard::Q) && !isPressed) //q pentru cresterea in size
@@ -455,14 +434,14 @@ int main()
 								isPressed = true;
 								window.clear(MyColor::backgroundColor);
 
-								unsigned int r = MyShapeSelector::shapes.triangles[MyShapeSelector::shapes.triangleCount - 1].getRadius() + 20;
+								unsigned int r = MyShapeSelector::shapes.triangles[MyShapeSelector::shapes.trianglesCount - 1].getRadius() + 20;
 
 								Clamp(width / 3, 20, r);
 
-								MyShapeSelector::shapes.triangles[MyShapeSelector::shapes.triangleCount - 1].setRadius(r);
-								MyShapeSelector::shapes.triangles[MyShapeSelector::shapes.triangleCount - 1].setOrigin(r, r);
+								MyShapeSelector::shapes.triangles[MyShapeSelector::shapes.trianglesCount - 1].setRadius(r);
+								MyShapeSelector::shapes.triangles[MyShapeSelector::shapes.trianglesCount - 1].setOrigin(r, r);
 
-								CreateMenuButtons(window);
+								MyShapeSelector::displayMenu(window);
 								DisplayShapes(window);
 
 								isPressed = exitTimer();
@@ -472,17 +451,17 @@ int main()
 								isPressed = true;
 								window.clear(MyColor::backgroundColor);
 
-								unsigned int r = MyShapeSelector::shapes.triangles[MyShapeSelector::shapes.triangleCount - 1].getRadius() - 20;
+								unsigned int r = MyShapeSelector::shapes.triangles[MyShapeSelector::shapes.trianglesCount - 1].getRadius() - 20;
 
 								if (r > height * 10)
 									r = 20;
 
 								Clamp(width / 3, 20, r);
 
-								MyShapeSelector::shapes.triangles[MyShapeSelector::shapes.triangleCount - 1].setRadius(r);
-								MyShapeSelector::shapes.triangles[MyShapeSelector::shapes.triangleCount - 1].setOrigin(r, r);
+								MyShapeSelector::shapes.triangles[MyShapeSelector::shapes.trianglesCount - 1].setRadius(r);
+								MyShapeSelector::shapes.triangles[MyShapeSelector::shapes.trianglesCount - 1].setOrigin(r, r);
 
-								CreateMenuButtons(window);
+								MyShapeSelector::displayMenu(window);
 								DisplayShapes(window);
 
 								isPressed = exitTimer();
@@ -492,13 +471,13 @@ int main()
 								isPressed = true;
 								window.clear(MyColor::backgroundColor);
 
-								unsigned int angle = MyShapeSelector::shapes.triangles[MyShapeSelector::shapes.triangleCount - 1].getRotation() + 10;
-								unsigned int r = MyShapeSelector::shapes.triangles[MyShapeSelector::shapes.triangleCount - 1].getRadius();
+								unsigned int angle = MyShapeSelector::shapes.triangles[MyShapeSelector::shapes.trianglesCount - 1].getRotation() + 10;
+								unsigned int r = MyShapeSelector::shapes.triangles[MyShapeSelector::shapes.trianglesCount - 1].getRadius();
 
-								MyShapeSelector::shapes.triangles[MyShapeSelector::shapes.triangleCount - 1].setOrigin(r, r);
-								MyShapeSelector::shapes.triangles[MyShapeSelector::shapes.triangleCount - 1].setRotation(angle);
+								MyShapeSelector::shapes.triangles[MyShapeSelector::shapes.trianglesCount - 1].setOrigin(r, r);
+								MyShapeSelector::shapes.triangles[MyShapeSelector::shapes.trianglesCount - 1].setRotation(angle);
 
-								CreateMenuButtons(window);
+								MyShapeSelector::displayMenu(window);
 								DisplayShapes(window);
 
 								isPressed = exitTimer();

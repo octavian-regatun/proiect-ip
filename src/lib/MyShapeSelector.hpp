@@ -3,7 +3,7 @@
 struct MyShapes
 {
 	//contoare de shape-uri
-	int rectangleCount, circleCount, triangleCount;
+	int rectanglesCount, circlesCount, trianglesCount;
 	//acestea sunt shape-urile cu care vom face morphing(more to be added in the future maybe?)
 	sf::RectangleShape* rectangles;
 	sf::CircleShape* circles;
@@ -24,8 +24,8 @@ class MyShapeSelector
 public:
 	static MyShapes shapes;
 	static MyShapeType selectedShape;
-	//sa stim ce piesa miscam
+	// sa stim ce piesa miscam
 	static MyShapeType currentMovingShape;
-	static void display(sf::RenderWindow& window);
+	static void displayMenu(sf::RenderWindow& window);
 	static void refreshShapesCount();
 };
