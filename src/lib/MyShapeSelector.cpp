@@ -1,5 +1,24 @@
-// #include "MyShapeSelector.hpp"
-// #include <SFML/Graphics.hpp>
+#include "MyShapeSelector.hpp"
+#include <SFML/Graphics.hpp>
+
+MyShapeType MyShapeSelector::selectedShape = MyShapeType::Nothing;
+MyShapeType MyShapeSelector::currentMovingShape = MyShapeType::Nothing;
+
+MyShapes MyShapeSelector::shapes = {
+	0,
+	0,
+	0,
+	new sf::RectangleShape[100],
+	new sf::CircleShape[100],
+	new sf::CircleShape[100]
+};
+
+void MyShapeSelector::refreshShapesCount()
+{
+	shapes.rectangleCount = 0;
+	shapes.circleCount = 0;
+	shapes.triangleCount = 0;
+}
 
 // struct menuBtns
 // {
