@@ -1,3 +1,4 @@
+#include "lib/MyColor.hpp"
 #include "lib/MyFont.hpp"
 #include <SFML/Graphics.hpp>
 #include <iostream>
@@ -5,10 +6,6 @@
 
 using namespace std;
 using namespace sf;
-//tricolorul aplicatiei(se poate schimba pe viitor daca ai o idee mai buna de paleta)
-Color backgroundClr = Color(44, 62, 80);
-Color btnClr = Color(22, 160, 133);
-Color txtClr = Color(26, 188, 156);
 
 const int SHAPECTR = 10; //va trebui sa folosim vectori de shape-uri deoarece cand cream un nou shape si dam update la window sa tinem minte shape-urile
 
@@ -90,18 +87,18 @@ void CreateMenuButtons(RenderWindow& window)
 	int length = 150;
 	int height = 50;
 
-	Button rectButton(window, btnClr, length, height, 200, window.getSize().y - 100);
-	rectButton.addText(window, txtClr, "RECTANGLE", MyFont::font, 24);
+	Button rectButton(window, MyColor::buttonColor, length, height, 200, window.getSize().y - 100);
+	rectButton.addText(window, MyColor::textColor, "RECTANGLE", MyFont::font, 24);
 	Mbuttons[1].btns[0] = rectButton.getButton();
 	Mbuttons[1].text[0] = rectButton.getText();
 
-	Button circleButton(window, btnClr, length, height, 500, window.getSize().y - 100);
-	circleButton.addText(window, txtClr, "CIRCLE   ", MyFont::font, 24); //sau mai exista susta de a pune spatii in plus ca sa se alinieze😎
+	Button circleButton(window, MyColor::buttonColor, length, height, 500, window.getSize().y - 100);
+	circleButton.addText(window, MyColor::textColor, "CIRCLE   ", MyFont::font, 24); //sau mai exista susta de a pune spatii in plus ca sa se alinieze😎
 	Mbuttons[1].btns[1] = circleButton.getButton();
 	Mbuttons[1].text[1] = circleButton.getText();
 
-	Button triangleButton(window, btnClr, length, height, 800, window.getSize().y - 100);
-	triangleButton.addText(window, txtClr, "TRIANGLE", MyFont::font, 24);
+	Button triangleButton(window, MyColor::buttonColor, length, height, 800, window.getSize().y - 100);
+	triangleButton.addText(window, MyColor::textColor, "TRIANGLE", MyFont::font, 24);
 	Mbuttons[1].btns[2] = triangleButton.getButton();
 	Mbuttons[1].text[2] = triangleButton.getText();
 
@@ -152,7 +149,7 @@ void Menu(RenderWindow& window)
 	RefreshCounterShapes();
 
 	//background color
-	window.clear(backgroundClr);
+	window.clear(MyColor::backgroundColor);
 	menuCounter = 0;
 
 	int x = window.getSize().x / 2.f;
@@ -165,15 +162,15 @@ void Menu(RenderWindow& window)
 	title.setFont(MyFont::fontBold);
 	title.setCharacterSize(70);
 	title.setPosition(x - 100, 100);
-	title.setFillColor(txtClr);
+	title.setFillColor(MyColor::textColor);
 	window.draw(title);
 
 	//button for create feature
 	int length = 200;
 	int height = 50;
 
-	Button createButton(window, btnClr, length, height, x, y);
-	createButton.addText(window, txtClr, "CREATE IMAGE", MyFont::font, 24); //ca textul sa se incadreze in centrul butonului ar trebui sa schimbi valorile length,height sau chSize(24)
+	Button createButton(window, MyColor::buttonColor, length, height, x, y);
+	createButton.addText(window, MyColor::textColor, "CREATE IMAGE", MyFont::font, 24); //ca textul sa se incadreze in centrul butonului ar trebui sa schimbi valorile length,height sau chSize(24)
 
 	Mbuttons[0].btns[0] = createButton.getButton();
 	Mbuttons[0].text[0] = createButton.getText();
@@ -183,7 +180,7 @@ void Menu(RenderWindow& window)
 }
 void CreateImagesMenu(RenderWindow& window)
 {
-	window.clear(backgroundClr);
+	window.clear(MyColor::backgroundColor);
 	menuCounter = 1;
 
 	CreateMenuButtons(window);
@@ -342,7 +339,7 @@ int main()
 						case 'r': {
 							if (Mouse::isButtonPressed(Mouse::Left))
 							{
-								window.clear(backgroundClr);
+								window.clear(MyColor::backgroundColor);
 
 								unsigned int x = Mouse::getPosition(window).x;
 								unsigned int y = Mouse::getPosition(window).y;
@@ -363,7 +360,7 @@ int main()
 							if (Keyboard::isKeyPressed(Keyboard::Q) && !isPressed) //q pentru cresterea in size
 							{
 								isPressed = true;
-								window.clear(backgroundClr);
+								window.clear(MyColor::backgroundColor);
 
 								unsigned int sizeX = rectangle[rectCtr - 1].getSize().x + 20;
 								unsigned int sizeY = rectangle[rectCtr - 1].getSize().y + 20;
@@ -388,7 +385,7 @@ int main()
 							if (Keyboard::isKeyPressed(Keyboard::E) && !isPressed) //e pentru scaderea in size
 							{
 								isPressed = true;
-								window.clear(backgroundClr);
+								window.clear(MyColor::backgroundColor);
 
 								unsigned int sizeX = rectangle[rectCtr - 1].getSize().x - 20;
 								unsigned int sizeY = rectangle[rectCtr - 1].getSize().y - 20;
@@ -418,7 +415,7 @@ int main()
 							if (Keyboard::isKeyPressed(Keyboard::R) && !isPressed) //r pentru rotatia acelor de ceasornic
 							{
 								isPressed = true;
-								window.clear(backgroundClr);
+								window.clear(MyColor::backgroundColor);
 
 								unsigned int angle = rectangle[rectCtr - 1].getRotation() + 10;
 
@@ -436,7 +433,7 @@ int main()
 						case 'c': {
 							if (Mouse::isButtonPressed(Mouse::Left))
 							{
-								window.clear(backgroundClr);
+								window.clear(MyColor::backgroundColor);
 
 								unsigned int x = Mouse::getPosition(window).x;
 								unsigned int y = Mouse::getPosition(window).y;
@@ -456,7 +453,7 @@ int main()
 							if (Keyboard::isKeyPressed(Keyboard::Q) && !isPressed) //q pentru cresterea in size
 							{
 								isPressed = true;
-								window.clear(backgroundClr);
+								window.clear(MyColor::backgroundColor);
 
 								unsigned int r = circle[circleCtr - 1].getRadius() + 20;
 
@@ -473,7 +470,7 @@ int main()
 							if (Keyboard::isKeyPressed(Keyboard::E) && !isPressed) //e pentru scaderea in size
 							{
 								isPressed = true;
-								window.clear(backgroundClr);
+								window.clear(MyColor::backgroundColor);
 
 								unsigned int r = circle[circleCtr - 1].getRadius() - 20;
 
@@ -497,7 +494,7 @@ int main()
 						case 't': {
 							if (Mouse::isButtonPressed(Mouse::Left))
 							{
-								window.clear(backgroundClr);
+								window.clear(MyColor::backgroundColor);
 
 								unsigned int x = Mouse::getPosition(window).x;
 								unsigned int y = Mouse::getPosition(window).y;
@@ -517,7 +514,7 @@ int main()
 							if (Keyboard::isKeyPressed(Keyboard::Q) && !isPressed) //q pentru cresterea in size
 							{
 								isPressed = true;
-								window.clear(backgroundClr);
+								window.clear(MyColor::backgroundColor);
 
 								unsigned int r = triangle[triangleCtr - 1].getRadius() + 20;
 
@@ -534,7 +531,7 @@ int main()
 							if (Keyboard::isKeyPressed(Keyboard::E) && !isPressed) //e pentru scaderea in size
 							{
 								isPressed = true;
-								window.clear(backgroundClr);
+								window.clear(MyColor::backgroundColor);
 
 								unsigned int r = triangle[triangleCtr - 1].getRadius() - 20;
 
@@ -554,7 +551,7 @@ int main()
 							if (Keyboard::isKeyPressed(Keyboard::R) && !isPressed) //r pentru rotatia acelor de ceasornic
 							{
 								isPressed = true;
-								window.clear(backgroundClr);
+								window.clear(MyColor::backgroundColor);
 
 								unsigned int angle = triangle[triangleCtr - 1].getRotation() + 10;
 								unsigned int r = triangle[triangleCtr - 1].getRadius();
