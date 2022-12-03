@@ -1,5 +1,7 @@
+#include "lib/MyButton.hpp"
 #include "lib/MyColor.hpp"
 #include "lib/MyFont.hpp"
+#include "lib/MyScreen.hpp"
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include <string>
@@ -22,50 +24,6 @@ int triangleCtr = 0;
 sf::String playerInput;
 sf::Text playerText;
 
-int menuCounter = 0; //0 for MainMenu, 1 for CreateMenu
-
-class Button
-{
-private:
-	RectangleShape button;
-	Text text;
-
-public:
-	Button(RenderWindow& window, Color fillColor, int length, int height, int x, int y)
-	{
-		button.setSize(sf::Vector2f(length, height));
-		button.setOrigin(length / 2, height / 2);
-		button.setPosition(x, y);
-		button.setFillColor(fillColor);
-		window.draw(button);
-	}
-
-	void addText(RenderWindow& window, Color color, string txt, Font font, int chSize)
-	{
-		text.setString(txt);
-		text.setFont(font);
-		text.setFillColor(color);
-
-		text.setCharacterSize(chSize);
-
-		float xPos = (button.getPosition().x + button.getGlobalBounds().width / 10) - (text.getGlobalBounds().width / 1.6f);
-		float yPos = (button.getPosition().y + button.getGlobalBounds().height / 10) - (text.getGlobalBounds().height / .9f);
-
-		text.setPosition({ xPos, yPos });
-
-		window.draw(text);
-	}
-
-	Text getText()
-	{
-		return text;
-	}
-	RectangleShape getButton()
-	{
-		return button;
-	}
-};
-
 struct menuBtns
 {
 	int counter = 0; //checks how many buttons are in a menu
@@ -87,20 +45,20 @@ void CreateMenuButtons(RenderWindow& window)
 	int length = 150;
 	int height = 50;
 
-	Button rectButton(window, MyColor::buttonColor, length, height, 200, window.getSize().y - 100);
-	rectButton.addText(window, MyColor::textColor, "RECTANGLE", MyFont::font, 24);
-	Mbuttons[1].btns[0] = rectButton.getButton();
-	Mbuttons[1].text[0] = rectButton.getText();
+	MyButton rectButton(window, MyColor::buttonColor, length, height, 200, window.getSize().y - 100);
+	rectButton.setText(window, MyColor::textColor, "RECTANGLE", MyFont::font, 24);
+	Mbuttons[1].btns[0] = rectButton.button;
+	Mbuttons[1].text[0] = rectButton.text;
 
-	Button circleButton(window, MyColor::buttonColor, length, height, 500, window.getSize().y - 100);
-	circleButton.addText(window, MyColor::textColor, "CIRCLE   ", MyFont::font, 24); //sau mai exista susta de a pune spatii in plus ca sa se alinieze😎
-	Mbuttons[1].btns[1] = circleButton.getButton();
-	Mbuttons[1].text[1] = circleButton.getText();
+	MyButton circleButton(window, MyColor::buttonColor, length, height, 500, window.getSize().y - 100);
+	circleButton.setText(window, MyColor::textColor, "CIRCLE   ", MyFont::font, 24); //sau mai exista susta de a pune spatii in plus ca sa se alinieze😎
+	Mbuttons[1].btns[1] = circleButton.button;
+	Mbuttons[1].text[1] = circleButton.text;
 
-	Button triangleButton(window, MyColor::buttonColor, length, height, 800, window.getSize().y - 100);
-	triangleButton.addText(window, MyColor::textColor, "TRIANGLE", MyFont::font, 24);
-	Mbuttons[1].btns[2] = triangleButton.getButton();
-	Mbuttons[1].text[2] = triangleButton.getText();
+	MyButton triangleButton(window, MyColor::buttonColor, length, height, 800, window.getSize().y - 100);
+	triangleButton.setText(window, MyColor::textColor, "TRIANGLE", MyFont::font, 24);
+	Mbuttons[1].btns[2] = triangleButton.button;
+	Mbuttons[1].text[2] = triangleButton.text;
 
 	Mbuttons[1].counter = 3;
 }
@@ -150,7 +108,7 @@ void Menu(RenderWindow& window)
 
 	//background color
 	window.clear(MyColor::backgroundColor);
-	menuCounter = 0;
+	MyScreen::goToScreen(MyScreenEnum::Start);
 
 	int x = window.getSize().x / 2.f;
 	int y = window.getSize().y / 2.f;
@@ -169,11 +127,11 @@ void Menu(RenderWindow& window)
 	int length = 200;
 	int height = 50;
 
-	Button createButton(window, MyColor::buttonColor, length, height, x, y);
-	createButton.addText(window, MyColor::textColor, "CREATE IMAGE", MyFont::font, 24); //ca textul sa se incadreze in centrul butonului ar trebui sa schimbi valorile length,height sau chSize(24)
+	MyButton createButton(window, MyColor::buttonColor, length, height, x, y);
+	createButton.setText(window, MyColor::textColor, "CREATE IMAGE", MyFont::font, 24); //ca textul sa se incadreze in centrul butonului ar trebui sa schimbi valorile length,height sau chSize(24)
 
-	Mbuttons[0].btns[0] = createButton.getButton();
-	Mbuttons[0].text[0] = createButton.getText();
+	Mbuttons[0].btns[0] = createButton.button;
+	Mbuttons[0].text[0] = createButton.text;
 	Mbuttons[0].counter = 1;
 
 	window.display();
@@ -181,7 +139,7 @@ void Menu(RenderWindow& window)
 void CreateImagesMenu(RenderWindow& window)
 {
 	window.clear(MyColor::backgroundColor);
-	menuCounter = 1;
+	MyScreen::goToScreen(MyScreenEnum::FirstImage);
 
 	CreateMenuButtons(window);
 
@@ -189,11 +147,10 @@ void CreateImagesMenu(RenderWindow& window)
 }
 int main()
 {
-	// create the window
 	unsigned int width = 1000;
 	unsigned int height = 1000;
 
-	sf::RenderWindow window(sf::VideoMode(width, height), "My bug");
+	sf::RenderWindow window(sf::VideoMode(width, height), "Morphing - Proiect IP");
 
 	MyFont::load();
 
@@ -221,11 +178,11 @@ int main()
 				default:
 					break;
 			}
-			switch (menuCounter) //butoanele vor functiona in functie de meniul curent
+			switch (MyScreen::currentScreen) //butoanele vor functiona in functie de meniul curent
 			{
 				case 0: {
 
-					RectangleShape collider = Mbuttons[menuCounter].btns[0]; //butonul de createImage
+					RectangleShape collider = Mbuttons[MyScreen::currentScreen].btns[0]; //butonul de createImage
 
 					if (isMousePressed(window, collider)) //check if mouse is pressed on the button
 					{
@@ -240,9 +197,9 @@ int main()
 					break;
 				}
 				case 1: {
-					RectangleShape rectangleBtn = Mbuttons[menuCounter].btns[0];
-					RectangleShape circleBtn = Mbuttons[menuCounter].btns[1];
-					RectangleShape triangleBtn = Mbuttons[menuCounter].btns[2];
+					RectangleShape rectangleBtn = Mbuttons[MyScreen::currentScreen].btns[0];
+					RectangleShape circleBtn = Mbuttons[MyScreen::currentScreen].btns[1];
+					RectangleShape triangleBtn = Mbuttons[MyScreen::currentScreen].btns[2];
 
 					if (isMousePressed(window, rectangleBtn))
 					{
