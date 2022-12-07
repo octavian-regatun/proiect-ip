@@ -1,12 +1,12 @@
 namespace my
 {
-enum ScreenType
+enum class ScreenType
 {
-	Start,
+	StartMenu,
 	FirstImage,
 	SecondImage,
 	Morphing,
-	End
+	EndMenu
 };
 
 class Screen
@@ -16,5 +16,6 @@ public:
 	static void nextScreen();
 	static void previousScreen();
 	static void goToScreen(ScreenType screen);
+	static void screenHandler(sf::RenderWindow& window, sf::Event& event);
 };
 }
