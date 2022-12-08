@@ -25,7 +25,7 @@ void ShapeSelector::handleCircleSelection(sf::RenderWindow& window)
 	std::cout << "Raza: ";
 	std::cin >> r;
 
-	Clamp(window.getSize().x / 3, 10, r);
+	clamp(window.getSize().x / 3, 10, r);
 
 	addCircle(window, r);
 
@@ -42,8 +42,8 @@ void ShapeSelector::handleRectangleSelection(sf::RenderWindow& window)
 	std::cout << "Inaltime: ";
 	std::cin >> height;
 
-	Clamp(window.getSize().x / 3, 10, width);
-	Clamp(window.getSize().y / 3, 10, height);
+	clamp(window.getSize().x / 3, 10, width);
+	clamp(window.getSize().y / 3, 10, height);
 
 	addRectangle(window, width, height);
 
@@ -57,7 +57,7 @@ void ShapeSelector::handleTriangleSelection(sf::RenderWindow& window)
 	std::cout << "Latura: ";
 	std::cin >> side;
 
-	Clamp(window.getSize().x / 3, 10, side);
+	clamp(window.getSize().x / 3, 10, side);
 
 	addTriangle(window, side);
 
@@ -115,9 +115,9 @@ void ShapeSelector::addTriangle(sf::RenderWindow& window, unsigned int side)
 
 void ShapeSelector::refreshShapesCount()
 {
-	// shapes.rectanglesCount = 0;
-	// shapes.circlesCount = 0;
-	// shapes.trianglesCount = 0;
+	shapes.rectangles.clear();
+	shapes.circles.clear();
+	shapes.triangles.clear();
 }
 
 void ShapeSelector::displayMenu(sf::RenderWindow& window)

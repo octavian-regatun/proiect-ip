@@ -1,4 +1,5 @@
 #include "DrawManager.hpp"
+#include "Clamp.hpp"
 #include "ShapeSelector.hpp"
 
 namespace my
@@ -23,38 +24,124 @@ void DrawManager::drawShapes(sf::RenderWindow& window)
 
 void DrawManager::handleEvents(sf::RenderWindow& window, sf::Event& event)
 {
-	// while left click is being hold down
+	handleMoveShape(window, event);
+	handleSavePosition(window, event);
+	handleSizeIncrease(window, event);
+	handleSizeDecrease(window, event);
+}
+
+void DrawManager::handleMoveShape(sf::RenderWindow& window, sf::Event& event)
+{
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
-	{
-		moveShape(window, event);
-	}
-
-	savePosition(window, event);
+		switch (ShapeSelector::movingShape)
+		{
+			case ShapeType::Rectangle:
+				ShapeSelector::shapes.rectangles.back().setPosition(sf::Mouse::getPosition(window).x, sf::Mouse::getPosition(window).y);
+				break;
+			case ShapeType::Circle:
+				ShapeSelector::shapes.circles.back().setPosition(sf::Mouse::getPosition(window).x, sf::Mouse::getPosition(window).y);
+				break;
+			case ShapeType::Triangle:
+				ShapeSelector::shapes.triangles.back().setPosition(sf::Mouse::getPosition(window).x, sf::Mouse::getPosition(window).y);
+				break;
+			case ShapeType::Nothing:
+				break;
+			default:
+				break;
+		}
 }
 
-void DrawManager::moveShape(sf::RenderWindow& window, sf::Event& event)
+void DrawManager::handleSavePosition(sf::RenderWindow& window, sf::Event& event)
 {
-	switch (ShapeSelector::movingShape)
-	{
-		case ShapeType::Rectangle:
-			ShapeSelector::shapes.rectangles.back().setPosition(sf::Mouse::getPosition(window).x, sf::Mouse::getPosition(window).y);
-			break;
-		case ShapeType::Circle:
-			ShapeSelector::shapes.circles.back().setPosition(sf::Mouse::getPosition(window).x, sf::Mouse::getPosition(window).y);
-			break;
-		case ShapeType::Triangle:
-			ShapeSelector::shapes.triangles.back().setPosition(sf::Mouse::getPosition(window).x, sf::Mouse::getPosition(window).y);
-			break;
-	}
-}
-
-void DrawManager::savePosition(sf::RenderWindow& window, sf::Event& event)
-{
-	// when pressed enter save the position of the shape
 	if (event.key.code == sf::Keyboard::Enter)
 	{
 		ShapeSelector::movingShape = ShapeType::Nothing;
 		ShapeSelector::selectedShape = ShapeType::Nothing;
 	}
+}
+
+void DrawManager::handleSizeIncrease(sf::RenderWindow& window, sf::Event& event)
+{
+	if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Q)
+		switch (ShapeSelector::movingShape)
+		{
+			case ShapeType::Rectangle: {
+				auto& rectangle = ShapeSelector::shapes.rectangles.back();
+				rectangle.setSize(sf::Vector2f(rectangle.getSize().x + rectangle.getSize().x * 0.1, rectangle.getSize().y + rectangle.getSize().y * 0.1));
+				clampShapeSize(rectangle);
+				rectangle.setOrigin(rectangle.getSize().x / 2, rectangle.getSize().y / 2);
+				break;
+			}
+			case ShapeType::Circle: {
+				auto& circle = ShapeSelector::shapes.circles.back();
+				circle.setRadius(circle.getRadius() + circle.getRadius() * 0.1);
+				clampShapeSize(circle);
+				circle.setOrigin(circle.getRadius(), circle.getRadius());
+				break;
+			}
+			case ShapeType::Triangle: {
+				auto& triangle = ShapeSelector::shapes.triangles.back();
+				triangle.setRadius(triangle.getRadius() + triangle.getRadius() * 0.1);
+				clampShapeSize(triangle);
+				triangle.setOrigin(triangle.getRadius(), triangle.getRadius());
+				break;
+			}
+			case ShapeType::Nothing:
+				break;
+			default:
+				break;
+		}
+}
+
+void DrawManager::handleSizeDecrease(sf::RenderWindow& window, sf::Event& event)
+{
+	if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::E)
+		switch (ShapeSelector::movingShape)
+		{
+			case ShapeType::Rectangle: {
+				auto& rectangle = ShapeSelector::shapes.rectangles.back();
+				rectangle.setSize(sf::Vector2f(rectangle.getSize().x - rectangle.getSize().x * 0.1, rectangle.getSize().y - rectangle.getSize().y * 0.1));
+				clampShapeSize(rectangle);
+				rectangle.setOrigin(rectangle.getSize().x / 2, rectangle.getSize().y / 2);
+				break;
+			}
+			case ShapeType::Circle: {
+				auto& circle = ShapeSelector::shapes.circles.back();
+				circle.setRadius(circle.getRadius() - circle.getRadius() * 0.1);
+				clampShapeSize(circle);
+				circle.setOrigin(circle.getRadius(), circle.getRadius());
+				break;
+			}
+			case ShapeType::Triangle: {
+				auto& triangle = ShapeSelector::shapes.triangles.back();
+				triangle.setRadius(triangle.getRadius() - triangle.getRadius() * 0.1);
+				clampShapeSize(triangle);
+				triangle.setOrigin(triangle.getRadius(), triangle.getRadius());
+				break;
+			}
+			case ShapeType::Nothing:
+				break;
+			default:
+				break;
+		}
+}
+
+void DrawManager::clampShapeSize(sf::RectangleShape& shape)
+{
+	float x = shape.getSize().x, y = shape.getSize().y;
+
+	clamp(300, 50, x);
+	clamp(300, 50, y);
+
+	shape.setSize(sf::Vector2f(x, y));
+}
+
+void DrawManager::clampShapeSize(sf::CircleShape& shape)
+{
+	float radius = shape.getRadius();
+
+	clamp(300, 50, radius);
+
+	shape.setRadius(radius);
 }
 }
