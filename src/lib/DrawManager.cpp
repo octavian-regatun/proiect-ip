@@ -53,6 +53,9 @@ void DrawManager::handleMoveShape(sf::RenderWindow& window, sf::Event& event)
 			case ShapeType::Triangle:
 				ShapeSelector::shapes.triangles.back().setPosition(sf::Mouse::getPosition(window).x, sf::Mouse::getPosition(window).y);
 				break;
+			case ShapeType::Polygon:
+				ShapeSelector::shapes.polygons.back().points.back().setPosition(sf::Mouse::getPosition(window).x, sf::Mouse::getPosition(window).y);
+				break;
 			case ShapeType::Nothing:
 				break;
 			default:

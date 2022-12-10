@@ -71,7 +71,9 @@ void ShapeSelector::handlePolygonSelection(sf::RenderWindow& window, sf::Event& 
 	{
 		Polygon polygon;
 
-		polygon.addPoint(window, sf::Vector2f(event.mouseButton.x, event.mouseButton.y));
+		ShapeSelector::shapes.polygons.push_back(polygon);
+
+		setMovingShape();
 	}
 }
 

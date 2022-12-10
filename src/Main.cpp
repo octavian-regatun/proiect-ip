@@ -24,11 +24,11 @@ int main()
 	while (window.isOpen())
 	{
 		sf::Event event;
-		my::Screen::screenHandler(window, event);
-		
+
 		while (window.pollEvent(event))
 		{
 
+			my::Screen::screenHandler(window, event);
 			my::AllButtons::handleEvents(window, event);
 
 			if (event.type == sf::Event::Closed)

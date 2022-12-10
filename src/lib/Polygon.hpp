@@ -5,9 +5,11 @@ namespace my
 class Polygon
 {
 public:
-	static std::vector<sf::CircleShape> points;
+	std::vector<sf::CircleShape> points;
+	bool isFinished;
 
 public:
+	Polygon();
 	void addPoint(sf::RenderWindow& window, sf::Vector2f position);
 };
 }

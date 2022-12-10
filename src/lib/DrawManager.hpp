@@ -9,7 +9,7 @@ private:
 	static void handleSizeDecrease(sf::RenderWindow& window, sf::Event& event);
 	static void clampShapeSize(sf::RectangleShape& shape);
 	static void clampShapeSize(sf::CircleShape& shape);
-	// static void restrictShapePosition
+	static void handleAddPolygonPoint(sf::RenderWindow& window, sf::Event& event);
 
 public:
 	static void drawShapes(sf::RenderWindow& window);

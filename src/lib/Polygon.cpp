@@ -2,7 +2,12 @@
 
 namespace my
 {
-std::vector<sf::CircleShape> Polygon::points = std::vector<sf::CircleShape>();
+
+Polygon::Polygon()
+{
+	isFinished = false;
+	points = std::vector<sf::CircleShape>();
+}
 
 void Polygon::addPoint(sf::RenderWindow& window, sf::Vector2f position)
 {
@@ -15,8 +20,5 @@ void Polygon::addPoint(sf::RenderWindow& window, sf::Vector2f position)
 	circle.setFillColor(sf::Color::White);
 
 	points.push_back(circle);
-
-	window.draw(circle);
-	window.display();
 }
 }
