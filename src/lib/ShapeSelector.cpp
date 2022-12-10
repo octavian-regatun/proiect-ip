@@ -1,6 +1,7 @@
 #include "ShapeSelector.hpp"
 #include "AllButtons.hpp"
 #include "Clamp.hpp"
+#include "Polygon.hpp"
 #include "lib/Button.hpp"
 #include "lib/Color.hpp"
 #include "lib/Font.hpp"
@@ -14,8 +15,8 @@ ShapeType ShapeSelector::movingShape = ShapeType::Nothing;
 Shapes ShapeSelector::shapes = {
 	std::vector<sf::RectangleShape>(),
 	std::vector<sf::CircleShape>(),
-	// se poate transforma din cerc in triunghi deoarece nu avem clasa pt triunghi
-	std::vector<sf::CircleShape>()
+	std::vector<sf::CircleShape>(),
+	std::vector<Polygon>()
 };
 
 void ShapeSelector::handleCircleSelection(sf::RenderWindow& window)
@@ -62,6 +63,16 @@ void ShapeSelector::handleTriangleSelection(sf::RenderWindow& window)
 	addTriangle(window, side);
 
 	setMovingShape();
+}
+
+void ShapeSelector::handlePolygonSelection(sf::RenderWindow& window, sf::Event& event)
+{
+	if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left)
+	{
+		Polygon polygon;
+
+		polygon.addPoint(window, sf::Vector2f(event.mouseButton.x, event.mouseButton.y));
+	}
 }
 
 void ShapeSelector::setMovingShape()
@@ -124,21 +135,25 @@ void ShapeSelector::displayMenu(sf::RenderWindow& window)
 {
 	int length = 150, height = 50;
 
-	my::Button rectButton(window, my::Color::buttonColor, length, height, 200, window.getSize().y - 100);
+	my::Button rectButton(window, my::Color::buttonColor, length, height, 125, window.getSize().y - 100);
 	rectButton.setText(window, my::Color::textColor, "RECTANGLE", my::Font::font, 24);
 	rectButton.setOnClick([]() { selectedShape = ShapeType::Rectangle; });
 
-	my::Button circleButton(window, my::Color::buttonColor, length, height, 500, window.getSize().y - 100);
+	my::Button circleButton(window, my::Color::buttonColor, length, height, 375, window.getSize().y - 100);
 	// sau mai exista susta de a pune spatii in plus ca sa se alinieze😎
-	circleButton.setText(window, my::Color::textColor, "CIRCLE   ", my::Font::font, 24);
+	circleButton.setText(window, my::Color::textColor, "CIRCLE  ", my::Font::font, 24);
 	circleButton.setOnClick([]() { selectedShape = ShapeType::Circle; });
 
-	my::Button triangleButton(window, my::Color::buttonColor, length, height, 800, window.getSize().y - 100);
+	my::Button triangleButton(window, my::Color::buttonColor, length, height, 625, window.getSize().y - 100);
 	triangleButton.setText(window, my::Color::textColor, "TRIANGLE", my::Font::font, 24);
 	triangleButton.setOnClick([]() { selectedShape = ShapeType::Triangle; });
+
+	my::Button polygonButton(window, my::Color::buttonColor, length, height, 875, window.getSize().y - 100);
+	polygonButton.setText(window, my::Color::textColor, "POLYGON", my::Font::font, 24);
+	polygonButton.setOnClick([]() { selectedShape = ShapeType::Polygon; });
 }
 
-void ShapeSelector::handleShapeSelection(sf::RenderWindow& window)
+void ShapeSelector::handleShapeSelection(sf::RenderWindow& window, sf::Event& event)
 {
 	switch (selectedShape)
 	{
@@ -150,6 +165,9 @@ void ShapeSelector::handleShapeSelection(sf::RenderWindow& window)
 			break;
 		case ShapeType::Triangle:
 			handleTriangleSelection(window);
+			break;
+		case ShapeType::Polygon:
+			handlePolygonSelection(window, event);
 			break;
 		case ShapeType::Nothing:
 			break;

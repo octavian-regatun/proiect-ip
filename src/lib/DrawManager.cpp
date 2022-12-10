@@ -20,6 +20,15 @@ void DrawManager::drawShapes(sf::RenderWindow& window)
 	{
 		window.draw(triangle);
 	}
+
+	for (auto& polygon : ShapeSelector::shapes.polygons)
+	{
+		for (auto& point : polygon.points)
+		{
+			std::cout << "test";
+			window.draw(point);
+		}
+	}
 }
 
 void DrawManager::handleEvents(sf::RenderWindow& window, sf::Event& event)

@@ -171,6 +171,16 @@
         "isDefault": true
       },
       "problemMatcher": ["$gcc"]
+    },
+    {
+      "type": "vsls",
+      "taskUid": "shell:Build & Run: Debug",
+      "problemMatcher": ["$vsls"],
+      "label": "Shared: Build & Run: Debug",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
     }
   ]
 }

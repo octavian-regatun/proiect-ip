@@ -18,7 +18,7 @@ void FirstImage::display(sf::RenderWindow& window)
 
 void FirstImage::handleEvents(sf::RenderWindow& window, sf::Event& event)
 {
-	ShapeSelector::handleShapeSelection(window);
+	ShapeSelector::handleShapeSelection(window, event);
 	DrawManager::handleEvents(window, event);
 }
 }

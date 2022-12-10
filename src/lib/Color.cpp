@@ -5,7 +5,7 @@ namespace my
 {
 //tricolorul aplicatiei(se poate schimba pe viitor daca ai o idee mai buna de paleta)
 sf::Color my::Color::backgroundColor = sf::Color(44, 62, 80);
-sf::Color my::Color::textColor = sf::Color(26, 188, 156);
+sf::Color my::Color::textColor = sf::Color(236, 240, 241);
 sf::Color my::Color::buttonColor = sf::Color(22, 160, 133);
 
 int my::Color::colorsCount = 16;
