@@ -3,13 +3,14 @@ namespace my
 class DrawManager
 {
 private:
+	static void handleAddPolygonPoint(sf::RenderWindow& window, sf::Event& event);
 	static void handleMoveShape(sf::RenderWindow& window, sf::Event& event);
 	static void handleSavePosition(sf::RenderWindow& window, sf::Event& event);
 	static void handleSizeIncrease(sf::RenderWindow& window, sf::Event& event);
 	static void handleSizeDecrease(sf::RenderWindow& window, sf::Event& event);
 	static void clampShapeSize(sf::RectangleShape& shape);
 	static void clampShapeSize(sf::CircleShape& shape);
-	static void handleAddPolygonPoint(sf::RenderWindow& window, sf::Event& event);
+	static void drawLinesBetweenPolygonPoints(sf::RenderWindow& window);
 
 public:
 	static void drawShapes(sf::RenderWindow& window);

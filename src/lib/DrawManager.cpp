@@ -25,10 +25,12 @@ void DrawManager::drawShapes(sf::RenderWindow& window)
 	{
 		for (auto& point : polygon.points)
 		{
-			std::cout << "test";
 			window.draw(point);
+			window.display();
 		}
 	}
+
+	drawLinesBetweenPolygonPoints(window);
 }
 
 void DrawManager::handleEvents(sf::RenderWindow& window, sf::Event& event)
@@ -54,13 +56,28 @@ void DrawManager::handleMoveShape(sf::RenderWindow& window, sf::Event& event)
 				ShapeSelector::shapes.triangles.back().setPosition(sf::Mouse::getPosition(window).x, sf::Mouse::getPosition(window).y);
 				break;
 			case ShapeType::Polygon:
-				ShapeSelector::shapes.polygons.back().points.back().setPosition(sf::Mouse::getPosition(window).x, sf::Mouse::getPosition(window).y);
+				handleAddPolygonPoint(window, event);
 				break;
 			case ShapeType::Nothing:
 				break;
 			default:
 				break;
 		}
+}
+
+void DrawManager::handleAddPolygonPoint(sf::RenderWindow& window, sf::Event& event)
+{
+
+	if (event.type == sf::Event::MouseButtonPressed && event.key.code == sf::Mouse::Left)
+	{
+		sf::CircleShape point;
+
+		point.setRadius(5);
+		point.setFillColor(sf::Color::Red);
+		point.setPosition(sf::Mouse::getPosition(window).x, sf::Mouse::getPosition(window).y);
+
+		ShapeSelector::shapes.polygons.back().points.push_back(point);
+	}
 }
 
 void DrawManager::handleSavePosition(sf::RenderWindow& window, sf::Event& event)
@@ -155,5 +172,27 @@ void DrawManager::clampShapeSize(sf::CircleShape& shape)
 	clamp(300, 50, radius);
 
 	shape.setRadius(radius);
+}
+
+void DrawManager::drawLinesBetweenPolygonPoints(sf::RenderWindow& window)
+{
+	if (ShapeSelector::shapes.polygons.size() > 0)
+	{
+		for (auto& polygon : ShapeSelector::shapes.polygons)
+		{
+			auto& points = ShapeSelector::shapes.polygons.back().points;
+
+			for (int i = 0; i < points.size() - 1; i++)
+			{
+				sf::Vertex line[] = {
+					sf::Vertex(points[i].getPosition()),
+					sf::Vertex(points[i + 1].getPosition())
+				};
+
+				window.draw(line, 5, sf::Lines);
+				window.display();
+			}
+		}
+	}
 }
 }
