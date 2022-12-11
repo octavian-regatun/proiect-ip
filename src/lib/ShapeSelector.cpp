@@ -23,6 +23,8 @@ Shapes ShapeSelector::shapes = {
 
 void ShapeSelector::handleCircleSelection(sf::RenderWindow& window)
 {
+	if (movingShape != ShapeType::Nothing)
+		return;
 	unsigned int r;
 
 	r = ShapeSettings::setCircleSettings(window, "Radius"); //pops up the settings for the shape
@@ -36,6 +38,9 @@ void ShapeSelector::handleCircleSelection(sf::RenderWindow& window)
 
 void ShapeSelector::handleRectangleSelection(sf::RenderWindow& window)
 {
+	if (movingShape != ShapeType::Nothing)
+		return;
+
 	unsigned int width, height;
 
 	ShapeSettings::setRectangleSettings(window, width, height);
@@ -50,6 +55,9 @@ void ShapeSelector::handleRectangleSelection(sf::RenderWindow& window)
 
 void ShapeSelector::handleTriangleSelection(sf::RenderWindow& window)
 {
+	if (movingShape != ShapeType::Nothing)
+		return;
+
 	unsigned int side;
 
 	side = ShapeSettings::setCircleSettings(window, "Side"); //pops up the settings for the shape
