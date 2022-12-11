@@ -72,8 +72,8 @@ void DrawManager::handleAddPolygonPoint(sf::RenderWindow& window, sf::Event& eve
 	{
 		sf::CircleShape point;
 
-		point.setRadius(5);
-		point.setFillColor(sf::Color::Red);
+		point.setRadius(1);
+		point.setFillColor(sf::Color::White);
 		point.setPosition(sf::Mouse::getPosition(window).x, sf::Mouse::getPosition(window).y);
 
 		ShapeSelector::shapes.polygons.back().points.push_back(point);
