@@ -2,6 +2,8 @@
 #include "AllButtons.hpp"
 #include "Clamp.hpp"
 #include "Polygon.hpp"
+#include "ShapeSettings.hpp"
+#include "Timer.hpp"
 #include "lib/Button.hpp"
 #include "lib/Color.hpp"
 #include "lib/Font.hpp"
@@ -21,10 +23,11 @@ Shapes ShapeSelector::shapes = {
 
 void ShapeSelector::handleCircleSelection(sf::RenderWindow& window)
 {
+	if (movingShape != ShapeType::Nothing)
+		return;
 	unsigned int r;
 
-	std::cout << "Raza: ";
-	std::cin >> r;
+	r = ShapeSettings::setCircleSettings(window, "Radius"); //pops up the settings for the shape
 
 	clamp(window.getSize().x / 3, 10, r);
 
@@ -35,13 +38,12 @@ void ShapeSelector::handleCircleSelection(sf::RenderWindow& window)
 
 void ShapeSelector::handleRectangleSelection(sf::RenderWindow& window)
 {
+	if (movingShape != ShapeType::Nothing)
+		return;
+
 	unsigned int width, height;
 
-	std::cout << "Latime: ";
-	std::cin >> width;
-
-	std::cout << "Inaltime: ";
-	std::cin >> height;
+	ShapeSettings::setRectangleSettings(window, width, height);
 
 	clamp(window.getSize().x / 3, 10, width);
 	clamp(window.getSize().y / 3, 10, height);
@@ -53,10 +55,12 @@ void ShapeSelector::handleRectangleSelection(sf::RenderWindow& window)
 
 void ShapeSelector::handleTriangleSelection(sf::RenderWindow& window)
 {
+	if (movingShape != ShapeType::Nothing)
+		return;
+
 	unsigned int side;
 
-	std::cout << "Latura: ";
-	std::cin >> side;
+	side = ShapeSettings::setCircleSettings(window, "Side"); //pops up the settings for the shape
 
 	clamp(window.getSize().x / 3, 10, side);
 

@@ -1,6 +1,7 @@
 #include "DrawManager.hpp"
 #include "Clamp.hpp"
 #include "ShapeSelector.hpp"
+#include "Timer.hpp"
 
 namespace my
 {
@@ -35,10 +36,27 @@ void DrawManager::drawShapes(sf::RenderWindow& window)
 
 void DrawManager::handleEvents(sf::RenderWindow& window, sf::Event& event)
 {
-	handleMoveShape(window, event);
-	handleSavePosition(window, event);
+	handleRotation(window, event);
 	handleSizeIncrease(window, event);
 	handleSizeDecrease(window, event);
+	handleMoveShape(window, event);
+	handleSavePosition(window, event);
+}
+sf::Vector2u DrawManager::setShapeBoundaries(sf::RenderWindow& window, sf::FloatRect localBounds, sf::FloatRect globalBounds)
+{
+	sf::Vector2u pos;
+	pos.x = sf::Mouse::getPosition(window).x;
+	pos.y = sf::Mouse::getPosition(window).y;
+
+	if (pos.x > window.getSize().x * 10) //e ceva bug in care din stanga se teleporteaza in dreapta
+		pos.x = 0;
+	if (pos.y > window.getSize().y * 10)
+		pos.y = 0;
+
+	clamp(window.getSize().x - globalBounds.width + localBounds.width / 2.f, localBounds.width / 2.f, pos.x);
+	clamp(window.getSize().y - 200 - globalBounds.height + localBounds.height / 2.f, localBounds.height / 2.f, pos.y);
+
+	return pos;
 }
 
 void DrawManager::handleMoveShape(sf::RenderWindow& window, sf::Event& event)
@@ -46,15 +64,21 @@ void DrawManager::handleMoveShape(sf::RenderWindow& window, sf::Event& event)
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
 		switch (ShapeSelector::movingShape)
 		{
-			case ShapeType::Rectangle:
-				ShapeSelector::shapes.rectangles.back().setPosition(sf::Mouse::getPosition(window).x, sf::Mouse::getPosition(window).y);
-				break;
-			case ShapeType::Circle:
-				ShapeSelector::shapes.circles.back().setPosition(sf::Mouse::getPosition(window).x, sf::Mouse::getPosition(window).y);
-				break;
-			case ShapeType::Triangle:
-				ShapeSelector::shapes.triangles.back().setPosition(sf::Mouse::getPosition(window).x, sf::Mouse::getPosition(window).y);
-				break;
+			case ShapeType::Rectangle: {
+				sf::Vector2u pos = setShapeBoundaries(window, ShapeSelector::shapes.rectangles.back().getLocalBounds(), ShapeSelector::shapes.rectangles.back().getGlobalBounds());
+				ShapeSelector::shapes.rectangles.back().setPosition(pos.x, pos.y);
+			}
+			break;
+			case ShapeType::Circle: {
+				sf::Vector2u pos = setShapeBoundaries(window, ShapeSelector::shapes.circles.back().getLocalBounds(), ShapeSelector::shapes.circles.back().getGlobalBounds());
+				ShapeSelector::shapes.circles.back().setPosition(pos.x, pos.y);
+			}
+			break;
+			case ShapeType::Triangle: {
+				sf::Vector2u pos = setShapeBoundaries(window, ShapeSelector::shapes.triangles.back().getLocalBounds(), ShapeSelector::shapes.triangles.back().getGlobalBounds());
+				ShapeSelector::shapes.triangles.back().setPosition(pos.x, pos.y);
+			}
+			break;
 			case ShapeType::Polygon:
 				handleAddPolygonPoint(window, event);
 				break;
@@ -82,11 +106,14 @@ void DrawManager::handleAddPolygonPoint(sf::RenderWindow& window, sf::Event& eve
 
 void DrawManager::handleSavePosition(sf::RenderWindow& window, sf::Event& event)
 {
-	if (event.key.code == sf::Keyboard::Enter)
-	{
-		ShapeSelector::movingShape = ShapeType::Nothing;
-		ShapeSelector::selectedShape = ShapeType::Nothing;
-	}
+	window.pollEvent(event);
+	if (!sf::Event::EventType::TextEntered)
+		return;
+	if (!(event.text.unicode == 13 && !sf::Mouse::isButtonPressed(sf::Mouse::Left))) //13 for enter key
+		return;
+
+	ShapeSelector::movingShape = ShapeType::Nothing;
+	ShapeSelector::selectedShape = ShapeType::Nothing;
 }
 
 void DrawManager::handleSizeIncrease(sf::RenderWindow& window, sf::Event& event)
@@ -155,6 +182,42 @@ void DrawManager::handleSizeDecrease(sf::RenderWindow& window, sf::Event& event)
 		}
 }
 
+void DrawManager::handleRotation(sf::RenderWindow& window, sf::Event& event)
+{
+
+	if (!(event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::R))
+		return;
+
+	switch (ShapeSelector::movingShape)
+	{
+		case ShapeType::Rectangle: {
+
+			auto& rectangle = ShapeSelector::shapes.rectangles.back();
+			unsigned int angle = rectangle.getRotation() + 10;
+			rectangle.setRotation(angle);
+			rectangle.setOrigin(rectangle.getLocalBounds().width / 2.f, rectangle.getLocalBounds().height / 2.f);
+			ShapeSelector::shapes.rectangles.back() = rectangle;
+			break;
+		}
+		case ShapeType::Triangle: {
+			auto& triangle = ShapeSelector::shapes.triangles.back();
+			unsigned int r = triangle.getRadius();
+			unsigned int angle = triangle.getRotation() + 10;
+
+			clamp(window.getSize().x / 3, 20, r);
+
+			triangle.setOrigin(r, r);
+			triangle.setRotation(angle);
+
+			ShapeSelector::shapes.triangles.back() = triangle;
+			break;
+		}
+		case ShapeType::Nothing:
+			break;
+		default:
+			break;
+	}
+}
 void DrawManager::clampShapeSize(sf::RectangleShape& shape)
 {
 	float x = shape.getSize().x, y = shape.getSize().y;
