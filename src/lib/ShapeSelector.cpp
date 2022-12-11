@@ -192,4 +192,5 @@ void ShapeSelector::handleShapeSelection(sf::RenderWindow& window, sf::Event& ev
 			break;
 	}
 }
+
 }

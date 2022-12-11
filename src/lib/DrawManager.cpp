@@ -1,5 +1,6 @@
 #include "DrawManager.hpp"
 #include "Clamp.hpp"
+#include "Color.hpp"
 #include "ShapeSelector.hpp"
 #include "Timer.hpp"
 
@@ -41,6 +42,8 @@ void DrawManager::handleEvents(sf::RenderWindow& window, sf::Event& event)
 	handleSizeDecrease(window, event);
 	handleMoveShape(window, event);
 	handleSavePosition(window, event);
+
+	movePointsFromPolygon(window, event);
 }
 sf::Vector2u DrawManager::setShapeBoundaries(sf::RenderWindow& window, sf::FloatRect localBounds, sf::FloatRect globalBounds)
 {
@@ -97,11 +100,40 @@ void DrawManager::handleAddPolygonPoint(sf::RenderWindow& window, sf::Event& eve
 	{
 		sf::CircleShape point;
 
-		point.setRadius(1);
+		point.setRadius(2);
 		point.setFillColor(sf::Color::White);
-		point.setPosition(sf::Mouse::getPosition(window).x, sf::Mouse::getPosition(window).y);
+		sf::Vector2u pos = DrawManager::setShapeBoundaries(window, point.getLocalBounds(), point.getGlobalBounds());
+		point.setPosition(pos.x, pos.y);
 
 		ShapeSelector::shapes.polygons.back().points.push_back(point);
+	}
+}
+void DrawManager::movePointsFromPolygon(sf::RenderWindow& window, sf::Event& event)
+{
+	if (ShapeSelector::shapes.polygons.size() == 0)
+		return;
+	auto& polygon = ShapeSelector::shapes.polygons.back();
+
+	if (!polygon.isFinished)
+		return;
+
+	for (auto& point : polygon.points)
+	{
+		point.setRadius(2);
+		point.setOrigin(2, 2);
+		point.setFillColor(sf::Color::White);
+
+		if (point.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(window))))
+		{
+			point.setRadius(10);
+			point.setOrigin(10, 10);
+			point.setFillColor(Color::buttonColor);
+			while (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+			{
+				sf::Vector2u pos = setShapeBoundaries(window, point.getLocalBounds(), point.getGlobalBounds());
+				point.setPosition(pos.x, pos.y);
+			}
+		}
 	}
 }
 
