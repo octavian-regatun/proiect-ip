@@ -38,6 +38,7 @@ public:
 	static ShapeType movingShape;
 	static void displayMenu(sf::RenderWindow& window);
 	static void refreshShapesCount();
+	static void handlePolygonFinish(sf::RenderWindow& window, sf::Event& event);
 	static void handleShapeSelection(sf::RenderWindow& window, sf::Event& event);
 };
 }

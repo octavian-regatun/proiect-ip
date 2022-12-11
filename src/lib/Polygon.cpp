@@ -21,4 +21,17 @@ void Polygon::addPoint(sf::RenderWindow& window, sf::Vector2f position)
 
 	points.push_back(circle);
 }
+
+void Polygon::drawLastLine(sf::RenderWindow& window)
+{
+	if (points.size() > 1)
+	{
+		sf::Vertex line[] = {
+			points.front().getPosition(),
+			points.back().getPosition()
+		};
+
+		window.draw(line, 2, sf::Lines);
+	}
+}
 }

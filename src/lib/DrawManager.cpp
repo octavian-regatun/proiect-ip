@@ -81,6 +81,7 @@ void DrawManager::handleMoveShape(sf::RenderWindow& window, sf::Event& event)
 			break;
 			case ShapeType::Polygon:
 				handleAddPolygonPoint(window, event);
+
 				break;
 			case ShapeType::Nothing:
 				break;
@@ -243,7 +244,7 @@ void DrawManager::drawLinesBetweenPolygonPoints(sf::RenderWindow& window)
 	{
 		for (auto& polygon : ShapeSelector::shapes.polygons)
 		{
-			auto& points = ShapeSelector::shapes.polygons.back().points;
+			auto& points = polygon.points;
 
 			for (int i = 0; i < points.size() - 1; i++)
 			{
@@ -255,6 +256,9 @@ void DrawManager::drawLinesBetweenPolygonPoints(sf::RenderWindow& window)
 				window.draw(line, 5, sf::Lines);
 				window.display();
 			}
+
+			if (polygon.isFinished)
+				polygon.drawLastLine(window);
 		}
 	}
 }

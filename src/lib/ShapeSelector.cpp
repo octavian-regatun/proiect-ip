@@ -146,7 +146,6 @@ void ShapeSelector::displayMenu(sf::RenderWindow& window)
 	rectButton.setOnClick([]() { selectedShape = ShapeType::Rectangle; });
 
 	my::Button circleButton(window, my::Color::buttonColor, length, height, 375, window.getSize().y - 100);
-	// sau mai exista susta de a pune spatii in plus ca sa se alinieze😎
 	circleButton.setText(window, my::Color::textColor, "CIRCLE  ", my::Font::font, 24);
 	circleButton.setOnClick([]() { selectedShape = ShapeType::Circle; });
 
@@ -157,6 +156,18 @@ void ShapeSelector::displayMenu(sf::RenderWindow& window)
 	my::Button polygonButton(window, my::Color::buttonColor, length, height, 875, window.getSize().y - 100);
 	polygonButton.setText(window, my::Color::textColor, "POLYGON", my::Font::font, 24);
 	polygonButton.setOnClick([]() { selectedShape = ShapeType::Polygon; });
+}
+
+void ShapeSelector::handlePolygonFinish(sf::RenderWindow& window, sf::Event& event)
+{
+	if (movingShape == ShapeType::Polygon)
+		if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Enter)
+		{
+			if (shapes.polygons.back().points.size() >= 3)
+			{
+				shapes.polygons.back().isFinished = true;
+			}
+		}
 }
 
 void ShapeSelector::handleShapeSelection(sf::RenderWindow& window, sf::Event& event)
