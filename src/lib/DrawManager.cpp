@@ -1,6 +1,7 @@
 #include "DrawManager.hpp"
 #include "Clamp.hpp"
 #include "Color.hpp"
+#include "SavingImage.hpp"
 #include "ShapeSelector.hpp"
 #include "Timer.hpp"
 
@@ -110,6 +111,9 @@ void DrawManager::handleAddPolygonPoint(sf::RenderWindow& window, sf::Event& eve
 }
 void DrawManager::movePointsFromPolygon(sf::RenderWindow& window, sf::Event& event)
 {
+	if (ShapeSelector::movingShape != ShapeType::Nothing) //we will modify the points when we dont have any shape moving
+		return;
+
 	if (ShapeSelector::shapes.polygons.size() == 0)
 		return;
 	auto& polygon = ShapeSelector::shapes.polygons.back();
@@ -135,6 +139,7 @@ void DrawManager::movePointsFromPolygon(sf::RenderWindow& window, sf::Event& eve
 			}
 		}
 	}
+	SavingImage::savePolygon();
 }
 
 void DrawManager::handleSavePosition(sf::RenderWindow& window, sf::Event& event)
@@ -142,9 +147,14 @@ void DrawManager::handleSavePosition(sf::RenderWindow& window, sf::Event& event)
 	window.pollEvent(event);
 	if (!sf::Event::EventType::TextEntered)
 		return;
+
+	if (event.text.unicode == 108)
+		SavingImage::loadAllShapes(window);
+
 	if (!(event.text.unicode == 13 && !sf::Mouse::isButtonPressed(sf::Mouse::Left))) //13 for enter key
 		return;
 
+	SavingImage::saveAllShapes();
 	ShapeSelector::movingShape = ShapeType::Nothing;
 	ShapeSelector::selectedShape = ShapeType::Nothing;
 }
