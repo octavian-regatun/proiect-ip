@@ -29,7 +29,6 @@ void DrawManager::drawShapes(sf::RenderWindow& window)
 		for (auto& point : polygon.points)
 		{
 			window.draw(point);
-			window.display();
 		}
 	}
 
@@ -97,7 +96,7 @@ void DrawManager::handleMoveShape(sf::RenderWindow& window, sf::Event& event)
 void DrawManager::handleAddPolygonPoint(sf::RenderWindow& window, sf::Event& event)
 {
 
-	if (event.type == sf::Event::MouseButtonPressed && event.key.code == sf::Mouse::Left)
+	if (event.type == sf::Event::MouseButtonPressed && event.key.code == sf::Mouse::Left && !ShapeSelector::shapes.polygons.back().isFinished)
 	{
 		sf::CircleShape point;
 
@@ -111,12 +110,13 @@ void DrawManager::handleAddPolygonPoint(sf::RenderWindow& window, sf::Event& eve
 }
 void DrawManager::movePointsFromPolygon(sf::RenderWindow& window, sf::Event& event)
 {
-	if (ShapeSelector::movingShape != ShapeType::Nothing) //we will modify the points when we dont have any shape moving
-		return;
-
 	if (ShapeSelector::shapes.polygons.size() == 0)
 		return;
+
 	auto& polygon = ShapeSelector::shapes.polygons.back();
+
+	if (ShapeSelector::movingShape != ShapeType::Polygon) //we will modify the points when we dont have any shape moving
+		return;
 
 	if (!polygon.isFinished)
 		return;
@@ -139,7 +139,6 @@ void DrawManager::movePointsFromPolygon(sf::RenderWindow& window, sf::Event& eve
 			}
 		}
 	}
-	SavingImage::savePolygon();
 }
 
 void DrawManager::handleSavePosition(sf::RenderWindow& window, sf::Event& event)
@@ -157,6 +156,12 @@ void DrawManager::handleSavePosition(sf::RenderWindow& window, sf::Event& event)
 	SavingImage::saveAllShapes();
 	ShapeSelector::movingShape = ShapeType::Nothing;
 	ShapeSelector::selectedShape = ShapeType::Nothing;
+
+	//we will not save polygons that are not finished, if enter pressed the unfinished polygon will be deleted!
+	if (ShapeSelector::shapes.polygons.size() == 0)
+		return;
+	if (!ShapeSelector::shapes.polygons.back().isFinished)
+		ShapeSelector::shapes.polygons.pop_back();
 }
 
 void DrawManager::handleSizeIncrease(sf::RenderWindow& window, sf::Event& event)
@@ -296,7 +301,6 @@ void DrawManager::drawLinesBetweenPolygonPoints(sf::RenderWindow& window)
 				};
 
 				window.draw(line, 5, sf::Lines);
-				window.display();
 			}
 
 			if (polygon.isFinished)

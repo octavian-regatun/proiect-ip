@@ -51,7 +51,10 @@ void SavingImage::saveRectangle()
 {
 	std::fstream f;
 	if (ShapeSelector::shapes.rectangles.size() == 1)
+	{
 		f.open(rectFileName, std::ios::out | std::ios::binary);
+		deleteAllShapes();
+	}
 	else
 		f.open(rectFileName, std::ios::app | std::ios::binary);
 
@@ -71,7 +74,10 @@ void SavingImage::saveCircle()
 {
 	std::fstream f;
 	if (ShapeSelector::shapes.circles.size() + ShapeSelector::shapes.triangles.size() <= 1)
+	{
 		f.open(circleFileName, std::ios::out | std::ios::binary);
+		deleteAllShapes();
+	}
 	else
 		f.open(circleFileName, std::ios::app | std::ios::binary);
 
@@ -79,12 +85,10 @@ void SavingImage::saveCircle()
 	if (ShapeSelector::movingShape == ShapeType::Triangle)
 	{
 		circle = ShapeSelector::shapes.triangles.back();
-		std::cout << "triunghi\n";
 	}
 	else
 	{
 		circle = ShapeSelector::shapes.circles.back();
-		std::cout << "cerc\n";
 	}
 
 	savingCircle = { circle.getPosition().x, circle.getPosition().y, circle.getRotation(), circle.getRadius(), circle.getFillColor().r, circle.getFillColor().g, circle.getFillColor().b, circle.getPointCount() };
@@ -99,20 +103,29 @@ void SavingImage::saveCircle()
 }
 void SavingImage::savePolygon()
 {
+
 	std::fstream f;
+	auto& polygon = ShapeSelector::shapes.polygons.back();
+	if (!polygon.isFinished)
+	{
+		std::cout << "ERROR SAVING! CANT SAVE UNFINISHED POLYGONS!!!\n";
+		return;
+	}
+
 	if (ShapeSelector::shapes.polygons.size() == 1)
+	{
 		f.open(polygonFileName, std::ios::out | std::ios::binary);
+		deleteAllShapes();
+	}
 	else
 		f.open(polygonFileName, std::ios::app | std::ios::binary);
-
-	auto& polygon = ShapeSelector::shapes.polygons.back();
 
 	savingPolygon.pointCounter = polygon.points.size();
 	f.write(reinterpret_cast<char*>(&savingPolygon.pointCounter), sizeof(savingPolygon.pointCounter));
 
 	if (!f.is_open())
 	{
-		std::cout << "ERROR SAVING " << rectFileName;
+		std::cout << "ERROR SAVING " << polygonFileName;
 		return;
 	}
 	for (int i = 0; i < savingPolygon.pointCounter; i++)
@@ -125,7 +138,26 @@ void SavingImage::savePolygon()
 
 	f.close();
 }
+void SavingImage::deleteAllShapes()
+{
+	std::fstream temp;
 
+	if (ShapeSelector::shapes.polygons.size() == 0)
+	{
+		temp.open(polygonFileName, std::ios::out | std::ios::trunc | std::ios::binary);
+		temp.close();
+	}
+	if (ShapeSelector::shapes.rectangles.size() == 0)
+	{
+		temp.open(rectFileName, std::ios::out | std::ios::trunc | std::ios::binary);
+		temp.close();
+	}
+	if (ShapeSelector::shapes.circles.size() + ShapeSelector::shapes.triangles.size() == 0)
+	{
+		temp.open(circleFileName, std::ios::out | std::ios::trunc | std::ios::binary);
+		temp.close();
+	}
+}
 void SavingImage::loadRectangle(sf::RenderWindow& window)
 {
 	std::ifstream f;
@@ -196,11 +228,12 @@ void SavingImage::loadPolygon(sf::RenderWindow& window)
 	f.seekg(0, std::ios::beg);
 
 	thisPolygon currPolygon;
-	Polygon poly;
 
 	while (f.tellg() < fileSize)
 	{
+		Polygon poly;
 		f.read(reinterpret_cast<char*>(&currPolygon.pointCounter), sizeof(currPolygon.pointCounter));
+
 		poly.isFinished = true;
 		for (int i = 0; i < currPolygon.pointCounter; i++)
 		{
@@ -213,10 +246,6 @@ void SavingImage::loadPolygon(sf::RenderWindow& window)
 		ShapeSelector::shapes.polygons.push_back(poly);
 	}
 
-	//	for (int i = 0; i < currPolygon.pointCounter; i++)
-	//	{
-	//		std::cout << currPolygon.posX[i] << ' ' << currPolygon.posY[i] << '\n';
-	//	}
 	f.close();
 }
 }

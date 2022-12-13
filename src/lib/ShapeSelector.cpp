@@ -161,7 +161,7 @@ void ShapeSelector::displayMenu(sf::RenderWindow& window)
 void ShapeSelector::handlePolygonFinish(sf::RenderWindow& window, sf::Event& event)
 {
 	if (movingShape == ShapeType::Polygon)
-		if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Enter)
+		if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::U)
 		{
 			if (shapes.polygons.back().points.size() >= 3)
 			{
@@ -186,6 +186,7 @@ void ShapeSelector::handleShapeSelection(sf::RenderWindow& window, sf::Event& ev
 		case ShapeType::Polygon:
 			handlePolygonSelection(window, event);
 			break;
+
 		case ShapeType::Nothing:
 			break;
 		default:

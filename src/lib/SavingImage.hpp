@@ -27,6 +27,8 @@ private:
 	static void loadCircle(sf::RenderWindow& window);
 	static void loadPolygon(sf::RenderWindow& window);
 
+	static void deleteAllShapes();
+
 public:
 	static void savePolygon();
 	static void saveAllShapes();
