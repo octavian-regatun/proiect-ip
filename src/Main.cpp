@@ -1,6 +1,6 @@
 #include "lib/AllButtons.hpp"
 #include "lib/Button.hpp"
-#include "lib/Color.hpp"
+#include "lib/ColorSelector.hpp"
 #include "lib/Font.hpp"
 #include "lib/Screen.hpp"
 #include "lib/ShapeSelector.hpp"

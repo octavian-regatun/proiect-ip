@@ -5,7 +5,7 @@
 #include "ShapeSelector.hpp"
 #include "Timer.hpp"
 #include "lib/Button.hpp"
-#include "lib/Color.hpp"
+#include "lib/ColorSelector.hpp"
 #include "lib/Font.hpp"
 #include <SFML/Graphics.hpp>
 
@@ -19,7 +19,7 @@ void ShapeSettings::createCanvas(sf::RenderWindow& window, int x, int y)
 	sf::RectangleShape dimensions({ x, y });
 	dimensions.setOrigin(x / 2, y / 2);
 	dimensions.setPosition(window.getSize().x / 2.f, window.getSize().y / 2.f);
-	dimensions.setFillColor(Color::buttonColor);
+	dimensions.setFillColor(ColorSelector::buttonColor);
 	window.draw(dimensions);
 }
 void ShapeSettings::createUserInput(sf::RenderWindow& window, std::string argument, sf::Vector2f v2f)
@@ -27,7 +27,7 @@ void ShapeSettings::createUserInput(sf::RenderWindow& window, std::string argume
 	//user input
 	sf::Text userInput;
 	userInput.setString(argument);
-	userInput.setColor(Color::textColor);
+	userInput.setColor(ColorSelector::textColor);
 	userInput.setFont(Font::font);
 	userInput.setPosition(v2f);
 	window.draw(userInput);
@@ -45,7 +45,7 @@ void ShapeSettings::writeSize(sf::RenderWindow& window, Button currInput, std::s
 		if (event.text.unicode == 8 && txt.length() > 0) //backspace for deleting last digit if text has more than 1 digit
 			txt.pop_back();
 
-		currInput.setText(window, Color::colors->Black, txt + ' ', Font::font, 24);
+		currInput.setText(window, sf::Color::Black, txt + ' ', Font::font, 24);
 		window.display();
 		Timer::setTimer(150); //timer
 	}
@@ -61,11 +61,11 @@ int ShapeSettings::setCircleSettings(sf::RenderWindow& window, std::string argum
 	createUserInput(window, argument, { window.getSize().x / 2.f - 100, window.getSize().y / 2.f - 120 });
 
 	//creating confirmation button
-	Button confirmButton(window, Color::backgroundColor, 100, 50, window.getSize().x / 2.f, window.getSize().y / 2.f + 150);
-	confirmButton.setText(window, Color::textColor, "Confirm", Font::font, 24);
+	Button confirmButton(window, ColorSelector::backgroundColor, 100, 50, window.getSize().x / 2.f, window.getSize().y / 2.f + 150);
+	confirmButton.setText(window, ColorSelector::textColor, "Confirm", Font::font, 24);
 
 	//creating text input
-	Button textInput(window, Color::textColor, 60, 50, window.getSize().x / 2.f + 50, window.getSize().y / 2.f - 100);
+	Button textInput(window, ColorSelector::textColor, 60, 50, window.getSize().x / 2.f + 50, window.getSize().y / 2.f - 100);
 
 	window.display();
 
@@ -115,12 +115,12 @@ void ShapeSettings::setRectangleSettings(sf::RenderWindow& window, unsigned int&
 	createUserInput(window, "Height", { window.getSize().x / 2.f - 100, window.getSize().y / 2.f - 30 });
 
 	//creating confirmation button
-	Button confirmButton(window, Color::backgroundColor, 100, 50, window.getSize().x / 2.f, window.getSize().y / 2.f + 150);
-	confirmButton.setText(window, Color::textColor, "Confirm", Font::font, 24);
+	Button confirmButton(window, ColorSelector::backgroundColor, 100, 50, window.getSize().x / 2.f, window.getSize().y / 2.f + 150);
+	confirmButton.setText(window, ColorSelector::textColor, "Confirm", Font::font, 24);
 
 	//creating text input
-	Button lengthInput(window, Color::textColor, 60, 50, window.getSize().x / 2.f + 50, window.getSize().y / 2.f - 100);
-	Button heightInput(window, Color::textColor, 60, 50, window.getSize().x / 2.f + 50, window.getSize().y / 2.f - 10);
+	Button lengthInput(window, ColorSelector::textColor, 60, 50, window.getSize().x / 2.f + 50, window.getSize().y / 2.f - 100);
+	Button heightInput(window, ColorSelector::textColor, 60, 50, window.getSize().x / 2.f + 50, window.getSize().y / 2.f - 10);
 
 	window.display();
 

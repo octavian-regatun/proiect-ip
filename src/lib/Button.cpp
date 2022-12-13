@@ -6,6 +6,8 @@ namespace my
 {
 Button::Button(sf::RenderWindow& window, sf::Color fillColor, int length, int height, int x, int y)
 {
+	isActive = true;
+
 	button.setSize(sf::Vector2f(length, height));
 	button.setOrigin(length / 2, height / 2);
 	button.setPosition(x, y);

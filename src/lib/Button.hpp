@@ -9,6 +9,7 @@ private:
 	std::function<void()> onClick;
 
 public:
+	bool isActive;
 	sf::RectangleShape button;
 	sf::Text text;
 	Button(sf::RenderWindow& window, sf::Color fillColor, int length, int height, int x, int y);

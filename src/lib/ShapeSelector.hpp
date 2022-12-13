@@ -1,5 +1,6 @@
 #include "Polygon.hpp"
 #include <SFML/Graphics.hpp>
+#include "Button.hpp"
 
 namespace my
 {
@@ -33,6 +34,10 @@ private:
 	static void setMovingShape();
 
 public:
+	static Button rectangleButton;
+	static Button circleButton;
+	static Button triangleButton;
+	static Button polygonButton;
 	static Shapes shapes;
 	static ShapeType selectedShape;
 	static ShapeType movingShape;

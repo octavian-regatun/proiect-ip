@@ -1,4 +1,5 @@
 #include "Polygon.hpp"
+#include "ColorSelector.hpp"
 
 namespace my
 {
@@ -17,7 +18,7 @@ void Polygon::addPoint(sf::RenderWindow& window, sf::Vector2f position)
 	circle.setOrigin(5, 5);
 	circle.setRadius(5);
 	circle.setPosition(position);
-	circle.setFillColor(sf::Color::White);
+	circle.setFillColor(ColorSelector::activeColor);
 
 	points.push_back(circle);
 }
@@ -30,6 +31,8 @@ void Polygon::drawLastLine(sf::RenderWindow& window)
 			points.front().getPosition(),
 			points.back().getPosition()
 		};
+
+		line->color = ColorSelector::activeColor;
 
 		window.draw(line, 2, sf::Lines);
 	}

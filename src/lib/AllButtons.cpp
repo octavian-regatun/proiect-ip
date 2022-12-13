@@ -13,7 +13,8 @@ void AllButtons::handleEvents(sf::RenderWindow& window, sf::Event& ev)
 				if (ev.mouseButton.button == sf::Mouse::Left)
 				{
 					auto func = myButton.getOnClick();
-					func();
+					if (myButton.isActive)
+						func();
 				}
 }
 }

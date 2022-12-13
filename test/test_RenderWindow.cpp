@@ -8,10 +8,10 @@ TEST_CASE("sf::RenderWindow", "[renderwindow]") {
 	REQUIRE(window.getSize().y == 200);
 
 	sf::CircleShape shape(window.getSize().x/2);
-	shape.setFillColor(sf::Color::White);
+	shape.setFillColor(sf::ColorSelector::White);
 
 	REQUIRE(shape.getRadius() == 100.0f);
-	REQUIRE(shape.getFillColor() == sf::Color::White);
+	REQUIRE(shape.getFillColor() == sf::ColorSelector::White);
 	REQUIRE(static_cast<int>(shape.getLocalBounds().width) == 198); // 🤔
 	REQUIRE(static_cast<int>(shape.getLocalBounds().height) == 200);
 

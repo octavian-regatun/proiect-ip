@@ -1,6 +1,6 @@
 #include "StartMenu.hpp"
 #include "Button.hpp"
-#include "Color.hpp"
+#include "ColorSelector.hpp"
 #include "Font.hpp"
 #include "Screen.hpp"
 #include "ShapeSelector.hpp"
@@ -16,7 +16,7 @@ void StartMenu::initialize()
 
 void StartMenu::display(sf::RenderWindow& window)
 {
-	window.clear(Color::backgroundColor);
+	window.clear(ColorSelector::backgroundColor);
 	displayTitle(window);
 	displayButtons(window);
 	window.display();
@@ -32,7 +32,7 @@ void StartMenu::displayTitle(sf::RenderWindow& window)
 	title.setFont(my::Font::fontBold);
 	title.setCharacterSize(70);
 	title.setPosition(x - 100, 100);
-	title.setFillColor(my::Color::textColor);
+	title.setFillColor(my::ColorSelector::textColor);
 	window.draw(title);
 }
 
@@ -45,9 +45,9 @@ void StartMenu::displayButtons(sf::RenderWindow& window)
 	int length = 200;
 	int height = 50;
 
-	Button createButton(window, Color::buttonColor, length, height, x, y);
+	Button createButton(window, ColorSelector::buttonColor, length, height, x, y);
 	//ca textul sa se incadreze in centrul butonului ar trebui sa schimbi valorile length,height sau chSize(24)
-	createButton.setText(window, Color::textColor, "CREATE IMAGE", Font::font, 24);
+	createButton.setText(window, ColorSelector::textColor, "CREATE IMAGE", Font::font, 24);
 	createButton.setOnClick([]() { Screen::goToScreen(ScreenType::FirstImage); });
 }
 

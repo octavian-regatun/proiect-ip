@@ -5,7 +5,7 @@
 #include "ShapeSettings.hpp"
 #include "Timer.hpp"
 #include "lib/Button.hpp"
-#include "lib/Color.hpp"
+#include "lib/ColorSelector.hpp"
 #include "lib/Font.hpp"
 #include <SFML/Graphics.hpp>
 
@@ -20,6 +20,10 @@ Shapes ShapeSelector::shapes = {
 	std::vector<sf::CircleShape>(),
 	std::vector<Polygon>()
 };
+
+// Button ShapeSelector::rectangleButton = NULL;
+// Button ShapeSelector::circleButton = NULL;
+// Button ShapeSelector::triangleButton = NULL;
 
 void ShapeSelector::handleCircleSelection(sf::RenderWindow& window)
 {
@@ -94,6 +98,7 @@ void ShapeSelector::addCircle(sf::RenderWindow& window, unsigned int radius)
 	circle.setRadius(radius);
 	circle.setOrigin(radius, radius);
 	circle.setPosition(window.getSize().x / 2.f, window.getSize().y / 2.f);
+	circle.setFillColor(my::ColorSelector::activeColor);
 
 	shapes.circles.push_back(circle);
 
@@ -108,6 +113,7 @@ void ShapeSelector::addRectangle(sf::RenderWindow& window, unsigned int width, u
 	rectangle.setSize(sf::Vector2f(width, height));
 	rectangle.setOrigin(width / 2.f, height / 2.f);
 	rectangle.setPosition(window.getSize().x / 2.f, window.getSize().y / 2.f);
+	rectangle.setFillColor(my::ColorSelector::activeColor);
 
 	shapes.rectangles.push_back(rectangle);
 
@@ -123,6 +129,7 @@ void ShapeSelector::addTriangle(sf::RenderWindow& window, unsigned int side)
 	triangle.setPointCount(3);
 	triangle.setOrigin(side, side);
 	triangle.setPosition(window.getSize().x / 2.f, window.getSize().y / 2.f);
+	triangle.setFillColor(my::ColorSelector::activeColor);
 
 	shapes.triangles.push_back(triangle);
 
@@ -141,21 +148,25 @@ void ShapeSelector::displayMenu(sf::RenderWindow& window)
 {
 	int length = 150, height = 50;
 
-	my::Button rectButton(window, my::Color::buttonColor, length, height, 125, window.getSize().y - 100);
-	rectButton.setText(window, my::Color::textColor, "RECTANGLE", my::Font::font, 24);
-	rectButton.setOnClick([]() { selectedShape = ShapeType::Rectangle; });
+	my::Button rectangleButton(window, my::ColorSelector::buttonColor, length, height, 200, window.getSize().y - 100);
+	rectangleButton.setText(window, my::ColorSelector::textColor, "RECTANGLE", my::Font::font, 24);
+	rectangleButton.setOnClick([]() { selectedShape = ShapeType::Rectangle; });
+	// ShapeSelector::rectangleButton = rectangleButton;
 
-	my::Button circleButton(window, my::Color::buttonColor, length, height, 375, window.getSize().y - 100);
-	circleButton.setText(window, my::Color::textColor, "CIRCLE  ", my::Font::font, 24);
+	my::Button circleButton(window, my::ColorSelector::buttonColor, length, height, 400, window.getSize().y - 100);
+	circleButton.setText(window, my::ColorSelector::textColor, "CIRCLE  ", my::Font::font, 24);
 	circleButton.setOnClick([]() { selectedShape = ShapeType::Circle; });
+	// ShapeSelector::circleButton = circleButton;
 
-	my::Button triangleButton(window, my::Color::buttonColor, length, height, 625, window.getSize().y - 100);
-	triangleButton.setText(window, my::Color::textColor, "TRIANGLE", my::Font::font, 24);
+	my::Button triangleButton(window, my::ColorSelector::buttonColor, length, height, 600, window.getSize().y - 100);
+	triangleButton.setText(window, my::ColorSelector::textColor, "TRIANGLE", my::Font::font, 24);
 	triangleButton.setOnClick([]() { selectedShape = ShapeType::Triangle; });
+	// ShapeSelector::triangleButton = triangleButton;
 
-	my::Button polygonButton(window, my::Color::buttonColor, length, height, 875, window.getSize().y - 100);
-	polygonButton.setText(window, my::Color::textColor, "POLYGON", my::Font::font, 24);
+	my::Button polygonButton(window, my::ColorSelector::buttonColor, length, height, 800, window.getSize().y - 100);
+	polygonButton.setText(window, my::ColorSelector::textColor, "POLYGON", my::Font::font, 24);
 	polygonButton.setOnClick([]() { selectedShape = ShapeType::Polygon; });
+	// ShapeSelector::polygonButton = polygonButton;
 }
 
 void ShapeSelector::handlePolygonFinish(sf::RenderWindow& window, sf::Event& event)
