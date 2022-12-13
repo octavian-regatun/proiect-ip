@@ -10,4 +10,6 @@ Thumbs.db
 .vscode/ipch
 
 # Project specific
-#
+
+# Binary files
+*.dat
