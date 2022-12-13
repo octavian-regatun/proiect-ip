@@ -1,6 +1,6 @@
 #include "DrawManager.hpp"
 #include "Clamp.hpp"
-#include "Color.hpp"
+#include "ColorSelector.hpp"
 #include "SavingImage.hpp"
 #include "ShapeSelector.hpp"
 #include "Timer.hpp"
@@ -131,7 +131,7 @@ void DrawManager::movePointsFromPolygon(sf::RenderWindow& window, sf::Event& eve
 		{
 			point.setRadius(10);
 			point.setOrigin(10, 10);
-			point.setFillColor(Color::buttonColor);
+			point.setFillColor(ColorSelector::buttonColor);
 			while (sf::Mouse::isButtonPressed(sf::Mouse::Left))
 			{
 				sf::Vector2u pos = setShapeBoundaries(window, point.getLocalBounds(), point.getGlobalBounds());

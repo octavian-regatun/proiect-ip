@@ -21,9 +21,10 @@ Shapes ShapeSelector::shapes = {
 	std::vector<Polygon>()
 };
 
-// Button ShapeSelector::rectangleButton = NULL;
-// Button ShapeSelector::circleButton = NULL;
-// Button ShapeSelector::triangleButton = NULL;
+Button* ShapeSelector::rectangleButton = nullptr;
+Button* ShapeSelector::circleButton = nullptr;
+Button* ShapeSelector::triangleButton = nullptr;
+Button* ShapeSelector::polygonButton = nullptr;
 
 void ShapeSelector::handleCircleSelection(sf::RenderWindow& window)
 {
@@ -151,22 +152,22 @@ void ShapeSelector::displayMenu(sf::RenderWindow& window)
 	my::Button rectangleButton(window, my::ColorSelector::buttonColor, length, height, 200, window.getSize().y - 100);
 	rectangleButton.setText(window, my::ColorSelector::textColor, "RECTANGLE", my::Font::font, 24);
 	rectangleButton.setOnClick([]() { selectedShape = ShapeType::Rectangle; });
-	// ShapeSelector::rectangleButton = rectangleButton;
+	ShapeSelector::rectangleButton = &rectangleButton;
 
 	my::Button circleButton(window, my::ColorSelector::buttonColor, length, height, 400, window.getSize().y - 100);
 	circleButton.setText(window, my::ColorSelector::textColor, "CIRCLE  ", my::Font::font, 24);
 	circleButton.setOnClick([]() { selectedShape = ShapeType::Circle; });
-	// ShapeSelector::circleButton = circleButton;
+	ShapeSelector::circleButton = &circleButton;
 
 	my::Button triangleButton(window, my::ColorSelector::buttonColor, length, height, 600, window.getSize().y - 100);
 	triangleButton.setText(window, my::ColorSelector::textColor, "TRIANGLE", my::Font::font, 24);
 	triangleButton.setOnClick([]() { selectedShape = ShapeType::Triangle; });
-	// ShapeSelector::triangleButton = triangleButton;
+	ShapeSelector::triangleButton = &triangleButton;
 
 	my::Button polygonButton(window, my::ColorSelector::buttonColor, length, height, 800, window.getSize().y - 100);
 	polygonButton.setText(window, my::ColorSelector::textColor, "POLYGON", my::Font::font, 24);
 	polygonButton.setOnClick([]() { selectedShape = ShapeType::Polygon; });
-	// ShapeSelector::polygonButton = polygonButton;
+	ShapeSelector::polygonButton = &polygonButton;
 }
 
 void ShapeSelector::handlePolygonFinish(sf::RenderWindow& window, sf::Event& event)

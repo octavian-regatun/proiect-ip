@@ -12,6 +12,8 @@ private:
 	static void toggleMenuSelector();
 	static void disableColorButtons();
 	static void disableShapeButtons();
+	static void enableColorButtons();
+	static void enableShapeButtons();
 
 public:
 	static MenuSelectorType activeMenuSelector;

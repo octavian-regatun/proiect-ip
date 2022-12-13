@@ -1,4 +1,5 @@
 #pragma once
+#include "Button.hpp"
 #include <SFML/Graphics.hpp>
 
 namespace my
@@ -12,6 +13,7 @@ public:
 	static sf::Color activeColor;
 
 	static std::vector<sf::Color> colors;
+	static std::vector<Button> colorButtons;
 
 	static void displayMenu(sf::RenderWindow& window);
 };

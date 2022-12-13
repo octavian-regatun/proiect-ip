@@ -9,6 +9,7 @@ sf::Color ColorSelector::buttonColor = sf::Color(22, 160, 133);
 sf::Color ColorSelector::activeColor = sf::Color(255, 255, 255);
 
 std::vector<sf::Color> ColorSelector::colors = { sf::Color(0, 255, 255), sf::Color(0, 0, 0), sf::Color(0, 0, 255), sf::Color(255, 0, 255), sf::Color(128, 128, 128), sf::Color(0, 128, 0), sf::Color(0, 255, 0), sf::Color(128, 0, 0), sf::Color(0, 0, 128), sf::Color(128, 128, 0), sf::Color(128, 0, 128), sf::Color(255, 0, 0), sf::Color(192, 192, 192), sf::Color(0, 128, 128), sf::Color(255, 255, 255), sf::Color(255, 255, 0) };
+std::vector<Button> ColorSelector::colorButtons = std::vector<Button>();
 
 void ColorSelector::displayMenu(sf::RenderWindow& window)
 {
@@ -19,6 +20,7 @@ void ColorSelector::displayMenu(sf::RenderWindow& window)
 	{
 		Button colorButton(window, colors[i], length, height, x, y);
 		colorButton.setOnClick([i]() { ColorSelector::activeColor = colors[i]; });
+		colorButtons.push_back(colorButton);
 
 		x += length + 40;
 		if (x >= window.getSize().x - 150)
