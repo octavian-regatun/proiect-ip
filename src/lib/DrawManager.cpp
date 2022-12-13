@@ -300,7 +300,12 @@ void DrawManager::drawLinesBetweenPolygonPoints(sf::RenderWindow& window)
 					sf::Vertex(points[i + 1].getPosition())
 				};
 
-				window.draw(line, 5, sf::Lines);
+				sf::Color color = points[i].getFillColor();
+
+				line[0].color = color;
+				line[1].color = color;
+
+				window.draw(line, 2, sf::Lines);
 			}
 
 			if (polygon.isFinished)

@@ -12,13 +12,12 @@ Polygon::Polygon()
 
 void Polygon::addPoint(sf::RenderWindow& window, sf::Vector2f position)
 {
-
 	sf::CircleShape circle;
 
 	circle.setOrigin(2, 2);
 	circle.setRadius(2);
 	circle.setPosition(position);
-	circle.setFillColor(ColorSelector::activeColor);
+	circle.setFillColor(sf::Color::Red);
 
 	points.push_back(circle);
 }
@@ -32,7 +31,8 @@ void Polygon::drawLastLine(sf::RenderWindow& window)
 			points.back().getPosition()
 		};
 
-		line->color = ColorSelector::activeColor;
+		line[0].color = ColorSelector::activeColor;
+		line[1].color = ColorSelector::activeColor;
 
 		window.draw(line, 2, sf::Lines);
 	}

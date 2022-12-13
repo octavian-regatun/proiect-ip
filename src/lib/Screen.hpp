@@ -17,5 +17,6 @@ public:
 	static void previousScreen();
 	static void goToScreen(ScreenType screen);
 	static void screenHandler(sf::RenderWindow& window, sf::Event& event);
+	static void backToStartMenu(sf::RenderWindow& window, sf::Event& event);
 };
 }

@@ -36,6 +36,7 @@ void Screen::screenHandler(sf::RenderWindow& window, sf::Event& event)
 		case ScreenType::FirstImage:
 			FirstImage::display(window);
 			FirstImage::handleEvents(window, event);
+			backToStartMenu(window, event);
 			break;
 		case ScreenType::SecondImage:
 			break;
@@ -48,4 +49,11 @@ void Screen::screenHandler(sf::RenderWindow& window, sf::Event& event)
 	}
 }
 
+void Screen::backToStartMenu(sf::RenderWindow& window, sf::Event& event)
+{
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
+	{
+		Screen::goToScreen(ScreenType::StartMenu);
+	}
+}
 }
