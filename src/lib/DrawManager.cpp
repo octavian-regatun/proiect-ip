@@ -171,6 +171,10 @@ void DrawManager::handleSizeIncrease(sf::RenderWindow& window, sf::Event& event)
 		{
 			case ShapeType::Rectangle: {
 				auto& rectangle = ShapeSelector::shapes.rectangles.back();
+
+				if (rectangle.getSize().x + rectangle.getSize().x * 0.1 >= 300 || rectangle.getSize().y + rectangle.getSize().y * 0.1 >= 300)
+					break;
+
 				rectangle.setSize(sf::Vector2f(rectangle.getSize().x + rectangle.getSize().x * 0.1, rectangle.getSize().y + rectangle.getSize().y * 0.1));
 				clampShapeSize(rectangle);
 				rectangle.setOrigin(rectangle.getSize().x / 2, rectangle.getSize().y / 2);
@@ -204,6 +208,10 @@ void DrawManager::handleSizeDecrease(sf::RenderWindow& window, sf::Event& event)
 		{
 			case ShapeType::Rectangle: {
 				auto& rectangle = ShapeSelector::shapes.rectangles.back();
+
+				if(rectangle.getSize().x - rectangle.getSize().x * 0.1 <= 50 || rectangle.getSize().y - rectangle.getSize().y * 0.1 <= 50)
+					break;
+
 				rectangle.setSize(sf::Vector2f(rectangle.getSize().x - rectangle.getSize().x * 0.1, rectangle.getSize().y - rectangle.getSize().y * 0.1));
 				clampShapeSize(rectangle);
 				rectangle.setOrigin(rectangle.getSize().x / 2, rectangle.getSize().y / 2);
