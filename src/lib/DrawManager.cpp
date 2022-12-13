@@ -1,5 +1,7 @@
 #include "DrawManager.hpp"
 #include "Clamp.hpp"
+#include "Color.hpp"
+#include "SavingImage.hpp"
 #include "ShapeSelector.hpp"
 #include "Timer.hpp"
 
@@ -27,7 +29,6 @@ void DrawManager::drawShapes(sf::RenderWindow& window)
 		for (auto& point : polygon.points)
 		{
 			window.draw(point);
-			window.display();
 		}
 	}
 
@@ -41,6 +42,8 @@ void DrawManager::handleEvents(sf::RenderWindow& window, sf::Event& event)
 	handleSizeDecrease(window, event);
 	handleMoveShape(window, event);
 	handleSavePosition(window, event);
+
+	movePointsFromPolygon(window, event);
 }
 sf::Vector2u DrawManager::setShapeBoundaries(sf::RenderWindow& window, sf::FloatRect localBounds, sf::FloatRect globalBounds)
 {
@@ -93,15 +96,48 @@ void DrawManager::handleMoveShape(sf::RenderWindow& window, sf::Event& event)
 void DrawManager::handleAddPolygonPoint(sf::RenderWindow& window, sf::Event& event)
 {
 
-	if (event.type == sf::Event::MouseButtonPressed && event.key.code == sf::Mouse::Left)
+	if (event.type == sf::Event::MouseButtonPressed && event.key.code == sf::Mouse::Left && !ShapeSelector::shapes.polygons.back().isFinished)
 	{
 		sf::CircleShape point;
 
-		point.setRadius(1);
+		point.setRadius(2);
 		point.setFillColor(sf::Color::White);
-		point.setPosition(sf::Mouse::getPosition(window).x, sf::Mouse::getPosition(window).y);
+		sf::Vector2u pos = DrawManager::setShapeBoundaries(window, point.getLocalBounds(), point.getGlobalBounds());
+		point.setPosition(pos.x, pos.y);
 
 		ShapeSelector::shapes.polygons.back().points.push_back(point);
+	}
+}
+void DrawManager::movePointsFromPolygon(sf::RenderWindow& window, sf::Event& event)
+{
+	if (ShapeSelector::shapes.polygons.size() == 0)
+		return;
+
+	auto& polygon = ShapeSelector::shapes.polygons.back();
+
+	if (ShapeSelector::movingShape != ShapeType::Polygon) //we will modify the points when we dont have any shape moving
+		return;
+
+	if (!polygon.isFinished)
+		return;
+
+	for (auto& point : polygon.points)
+	{
+		point.setRadius(2);
+		point.setOrigin(2, 2);
+		point.setFillColor(sf::Color::White);
+
+		if (point.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(window))))
+		{
+			point.setRadius(10);
+			point.setOrigin(10, 10);
+			point.setFillColor(Color::buttonColor);
+			while (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+			{
+				sf::Vector2u pos = setShapeBoundaries(window, point.getLocalBounds(), point.getGlobalBounds());
+				point.setPosition(pos.x, pos.y);
+			}
+		}
 	}
 }
 
@@ -110,11 +146,22 @@ void DrawManager::handleSavePosition(sf::RenderWindow& window, sf::Event& event)
 	window.pollEvent(event);
 	if (!sf::Event::EventType::TextEntered)
 		return;
+
+	if (event.text.unicode == 108)
+		SavingImage::loadAllShapes(window);
+
 	if (!(event.text.unicode == 13 && !sf::Mouse::isButtonPressed(sf::Mouse::Left))) //13 for enter key
 		return;
 
+	SavingImage::saveAllShapes();
 	ShapeSelector::movingShape = ShapeType::Nothing;
 	ShapeSelector::selectedShape = ShapeType::Nothing;
+
+	//we will not save polygons that are not finished, if enter pressed the unfinished polygon will be deleted!
+	if (ShapeSelector::shapes.polygons.size() == 0)
+		return;
+	if (!ShapeSelector::shapes.polygons.back().isFinished)
+		ShapeSelector::shapes.polygons.pop_back();
 }
 
 void DrawManager::handleSizeIncrease(sf::RenderWindow& window, sf::Event& event)
@@ -254,7 +301,6 @@ void DrawManager::drawLinesBetweenPolygonPoints(sf::RenderWindow& window)
 				};
 
 				window.draw(line, 5, sf::Lines);
-				window.display();
 			}
 
 			if (polygon.isFinished)

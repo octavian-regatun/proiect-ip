@@ -13,6 +13,7 @@ private:
 	static void drawLinesBetweenPolygonPoints(sf::RenderWindow& window);
 	static sf::Vector2u setShapeBoundaries(sf::RenderWindow& window, sf::FloatRect localBounds, sf::FloatRect globalBounds);
 	static void handleRotation(sf::RenderWindow& window, sf::Event& event);
+	static void movePointsFromPolygon(sf::RenderWindow& window, sf::Event& event);
 
 public:
 	static void drawShapes(sf::RenderWindow& window);

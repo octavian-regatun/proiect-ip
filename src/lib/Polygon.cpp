@@ -15,8 +15,8 @@ void Polygon::addPoint(sf::RenderWindow& window, sf::Vector2f position)
 
 	sf::CircleShape circle;
 
-	circle.setOrigin(5, 5);
-	circle.setRadius(5);
+	circle.setOrigin(2, 2);
+	circle.setRadius(2);
 	circle.setPosition(position);
 	circle.setFillColor(ColorSelector::activeColor);
 
