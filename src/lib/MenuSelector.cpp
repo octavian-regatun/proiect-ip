@@ -1,4 +1,5 @@
 #include "MenuSelector.hpp"
+#include "AllButtons.hpp"
 #include "Button.hpp"
 #include "ColorSelector.hpp"
 #include "Font.hpp"
@@ -38,32 +39,30 @@ void MenuSelector::drawButtons(sf::RenderWindow& window)
 
 void MenuSelector::disableShapeButtons()
 {
-	ShapeSelector::circleButton->isActive = false;
-	ShapeSelector::rectangleButton->isActive = false;
-	ShapeSelector::triangleButton->isActive = false;
+	for (Button& button : AllButtons::buttons)
+		if (button.text.getString() == "RECTANGLE" || button.text.getString() == "CIRCLE  " || button.text.getString() == "TRIANGLE" || button.text.getString() == "POLYGON")
+			button.isActive = false;
 }
 
 void MenuSelector::disableColorButtons()
 {
 	for (Button& button : ColorSelector::colorButtons)
-	{
-		button.isActive = false;
-	}
+		if (button.text.getString() == "COLOR")
+			button.isActive = false;
 }
 
 void MenuSelector::enableShapeButtons()
 {
-	ShapeSelector::circleButton->isActive = true;
-	ShapeSelector::rectangleButton->isActive = true;
-	ShapeSelector::triangleButton->isActive = true;
+	for (Button& button : AllButtons::buttons)
+		if (button.text.getString() == "RECTANGLE" || button.text.getString() == "CIRCLE  " || button.text.getString() == "TRIANGLE" || button.text.getString() == "POLYGON")
+			button.isActive = true;
 }
 
 void MenuSelector::enableColorButtons()
 {
 	for (Button& button : ColorSelector::colorButtons)
-	{
-		button.isActive = true;
-	}
+		if (button.text.getString() == "COLOR")
+			button.isActive = true;
 }
 
 void MenuSelector::displayMenu(sf::RenderWindow& window)

@@ -1,5 +1,6 @@
 #include "ColorSelector.hpp"
 #include "Button.hpp"
+#include "Font.hpp"
 
 namespace my
 {
@@ -13,12 +14,13 @@ std::vector<Button> ColorSelector::colorButtons = std::vector<Button>();
 
 void ColorSelector::displayMenu(sf::RenderWindow& window)
 {
-	unsigned int length = 50, height = 50, fontSize = 18;
+	unsigned int length = 50, height = 50, fontSize = 1;
 
 	unsigned int x = 185, y = window.getSize().y - 135;
 	for (unsigned int i = 0; i < colors.size(); i++)
 	{
 		Button colorButton(window, colors[i], length, height, x, y);
+		colorButton.setText(window, colors[i], "COLOR", Font::font, fontSize);
 		colorButton.setOnClick([i]() { ColorSelector::activeColor = colors[i]; });
 		colorButtons.push_back(colorButton);
 
