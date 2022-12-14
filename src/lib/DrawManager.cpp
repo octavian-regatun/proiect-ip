@@ -2,6 +2,7 @@
 #include "Clamp.hpp"
 #include "ColorSelector.hpp"
 #include "SavingImage.hpp"
+#include "Screen.hpp"
 #include "ShapeSelector.hpp"
 #include "Timer.hpp"
 
@@ -9,26 +10,54 @@ namespace my
 {
 void DrawManager::drawShapes(sf::RenderWindow& window)
 {
-	for (auto& rectangle : ShapeSelector::shapes.rectangles)
+	if (Screen::currentScreen == ScreenType::FirstImage)
 	{
-		window.draw(rectangle);
-	}
-
-	for (auto& circle : ShapeSelector::shapes.circles)
-	{
-		window.draw(circle);
-	}
-
-	for (auto& triangle : ShapeSelector::shapes.triangles)
-	{
-		window.draw(triangle);
-	}
-
-	for (auto& polygon : ShapeSelector::shapes.polygons)
-	{
-		for (auto& point : polygon.points)
+		for (auto& rectangle : ShapeSelector::shapes.rectangles)
 		{
-			window.draw(point);
+			window.draw(rectangle);
+		}
+
+		for (auto& circle : ShapeSelector::shapes.circles)
+		{
+			window.draw(circle);
+		}
+
+		for (auto& triangle : ShapeSelector::shapes.triangles)
+		{
+			window.draw(triangle);
+		}
+
+		for (auto& polygon : ShapeSelector::shapes.polygons)
+		{
+			for (auto& point : polygon.points)
+			{
+				window.draw(point);
+			}
+		}
+	}
+	else if (Screen::currentScreen == ScreenType::SecondImage)
+	{
+		for (auto& rectangle : ShapeSelector::shapes2.rectangles)
+		{
+			window.draw(rectangle);
+		}
+
+		for (auto& circle : ShapeSelector::shapes2.circles)
+		{
+			window.draw(circle);
+		}
+
+		for (auto& triangle : ShapeSelector::shapes2.triangles)
+		{
+			window.draw(triangle);
+		}
+
+		for (auto& polygon : ShapeSelector::shapes2.polygons)
+		{
+			for (auto& point : polygon.points)
+			{
+				window.draw(point);
+			}
 		}
 	}
 
@@ -147,8 +176,11 @@ void DrawManager::handleSavePosition(sf::RenderWindow& window, sf::Event& event)
 	if (!sf::Event::EventType::TextEntered)
 		return;
 
-	if (event.text.unicode == 108)
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::L))
+	{
+		std::cout << "test";
 		SavingImage::loadAllShapes(window);
+	}
 
 	if (!(event.text.unicode == 13 && !sf::Mouse::isButtonPressed(sf::Mouse::Left))) //13 for enter key
 		return;
@@ -157,7 +189,7 @@ void DrawManager::handleSavePosition(sf::RenderWindow& window, sf::Event& event)
 	ShapeSelector::movingShape = ShapeType::Nothing;
 	ShapeSelector::selectedShape = ShapeType::Nothing;
 
-	//we will not save polygons that are not finished, if enter pressed the unfinished polygon will be deleted!
+	// we will not save polygons that are not finished, if enter pressed the unfinished polygon will be deleted!
 	if (ShapeSelector::shapes.polygons.size() == 0)
 		return;
 	if (!ShapeSelector::shapes.polygons.back().isFinished)
@@ -209,7 +241,7 @@ void DrawManager::handleSizeDecrease(sf::RenderWindow& window, sf::Event& event)
 			case ShapeType::Rectangle: {
 				auto& rectangle = ShapeSelector::shapes.rectangles.back();
 
-				if(rectangle.getSize().x - rectangle.getSize().x * 0.1 <= 50 || rectangle.getSize().y - rectangle.getSize().y * 0.1 <= 50)
+				if (rectangle.getSize().x - rectangle.getSize().x * 0.1 <= 50 || rectangle.getSize().y - rectangle.getSize().y * 0.1 <= 50)
 					break;
 
 				rectangle.setSize(sf::Vector2f(rectangle.getSize().x - rectangle.getSize().x * 0.1, rectangle.getSize().y - rectangle.getSize().y * 0.1));

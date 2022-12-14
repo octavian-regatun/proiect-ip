@@ -1,5 +1,6 @@
 #include "Screen.hpp"
 #include "FirstImage.hpp"
+#include "SecondImage.hpp"
 #include "StartMenu.hpp"
 
 namespace my
@@ -35,10 +36,15 @@ void Screen::screenHandler(sf::RenderWindow& window, sf::Event& event)
 			break;
 		case ScreenType::FirstImage:
 			FirstImage::display(window);
+			FirstImage::displayText(window);
 			FirstImage::handleEvents(window, event);
 			backToStartMenu(window, event);
 			break;
 		case ScreenType::SecondImage:
+			SecondImage::display(window);
+			SecondImage::displayText(window);
+			SecondImage::handleEvents(window, event);
+			backToStartMenu(window, event);
 			break;
 		case ScreenType::Morphing:
 			break;

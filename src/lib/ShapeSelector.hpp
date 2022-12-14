@@ -1,6 +1,6 @@
+#include "Button.hpp"
 #include "Polygon.hpp"
 #include <SFML/Graphics.hpp>
-#include "Button.hpp"
 
 namespace my
 {
@@ -39,6 +39,7 @@ public:
 	static Button* triangleButton;
 	static Button* polygonButton;
 	static Shapes shapes;
+	static Shapes shapes2;
 	static ShapeType selectedShape;
 	static ShapeType movingShape;
 	static void displayMenu(sf::RenderWindow& window);

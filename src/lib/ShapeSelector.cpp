@@ -21,6 +21,13 @@ Shapes ShapeSelector::shapes = {
 	std::vector<Polygon>()
 };
 
+Shapes ShapeSelector::shapes2 = {
+	std::vector<sf::RectangleShape>(),
+	std::vector<sf::CircleShape>(),
+	std::vector<sf::CircleShape>(),
+	std::vector<Polygon>()
+};
+
 Button* ShapeSelector::rectangleButton = nullptr;
 Button* ShapeSelector::circleButton = nullptr;
 Button* ShapeSelector::triangleButton = nullptr;
