@@ -36,7 +36,6 @@ void Screen::screenHandler(sf::RenderWindow& window, sf::Event& event)
 			break;
 		case ScreenType::FirstImage:
 			FirstImage::display(window);
-			FirstImage::displayText(window);
 			FirstImage::handleEvents(window, event);
 			backToStartMenu(window, event);
 			break;

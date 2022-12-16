@@ -2,6 +2,7 @@
 #include "AllButtons.hpp"
 #include "Button.hpp"
 #include "ColorSelector.hpp"
+#include "FirstImage.hpp"
 #include "Font.hpp"
 #include "ShapeSelector.hpp"
 
@@ -11,6 +12,7 @@ MenuSelectorType MenuSelector::activeMenuSelector = MenuSelectorType::ShapeSelec
 
 void MenuSelector::toggleMenuSelector()
 {
+
 	switch (activeMenuSelector)
 	{
 		case MenuSelectorType::ShapeSelector:
@@ -19,7 +21,6 @@ void MenuSelector::toggleMenuSelector()
 		case MenuSelectorType::ColorSelector:
 			activeMenuSelector = MenuSelectorType::ShapeSelector;
 			break;
-
 		default:
 			break;
 	}
@@ -29,12 +30,16 @@ void MenuSelector::drawButtons(sf::RenderWindow& window)
 {
 	unsigned int length = 75, height = 50, fontSize = 18;
 	Button previousButton(window, ColorSelector::buttonColor, length, height, 50, window.getSize().y - 100);
-	previousButton.setText(window, ColorSelector::textColor, "Previous", Font::font, fontSize);
-	previousButton.setOnClick([]() { toggleMenuSelector(); });
+	previousButton.setText(window, ColorSelector::textColor, " <   ", Font::font, fontSize);
+	//previousButton.setOnClick([]() { toggleMenuSelector(); }); codul pentru setonclick nu este bun deoarece intra de peste 100 de ori in functie cand se da click
+	if (previousButton.button.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(window))) && sf::Mouse::isButtonPressed(sf::Mouse::Left))
+		toggleMenuSelector();
 
 	Button nextButton(window, ColorSelector::buttonColor, length, height, window.getSize().y - 50, window.getSize().y - 100);
-	nextButton.setText(window, ColorSelector::textColor, "Next", Font::font, fontSize);
-	nextButton.setOnClick([]() { toggleMenuSelector(); });
+	nextButton.setText(window, ColorSelector::textColor, " >  ", Font::font, fontSize);
+	//nextButton.setOnClick([]() { toggleMenuSelector(); });
+	if (nextButton.button.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(window))) && sf::Mouse::isButtonPressed(sf::Mouse::Left))
+		toggleMenuSelector();
 }
 
 void MenuSelector::disableShapeButtons()
@@ -71,6 +76,7 @@ void MenuSelector::displayMenu(sf::RenderWindow& window)
 	{
 		case MenuSelectorType::ShapeSelector:
 			ShapeSelector::displayMenu(window);
+			FirstImage::displayText(window);
 			disableColorButtons();
 			enableShapeButtons();
 			break;

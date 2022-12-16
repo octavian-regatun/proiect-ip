@@ -40,6 +40,7 @@ public:
 	static Button* polygonButton;
 	static Shapes shapes;
 	static Shapes shapes2;
+	static std::vector<ShapeType> allShapeTypes;
 	static ShapeType selectedShape;
 	static ShapeType movingShape;
 	static void displayMenu(sf::RenderWindow& window);

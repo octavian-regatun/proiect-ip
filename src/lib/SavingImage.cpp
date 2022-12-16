@@ -8,27 +8,32 @@ namespace my
 Rectangle SavingImage::savingRect;
 Circle SavingImage::savingCircle;
 thisPolygon SavingImage::savingPolygon;
+char SavingImage::savingOrder;
 
 std::string rectFileName = "rectangle.dat";
 std::string circleFileName = "circle.dat";
 std::string polygonFileName = "polygon.dat";
+std::string shapeOrderFileName = "shapeOrder.dat";
 
 void SavingImage::saveAllShapes()
 {
-
 	switch (ShapeSelector::movingShape)
 	{
 		case ShapeType::Rectangle:
 			saveRectangle();
+			saveOrder();
 			break;
 		case ShapeType::Circle:
 			saveCircle();
+			saveOrder();
 			break;
 		case ShapeType::Triangle:
 			saveCircle();
+			saveOrder();
 			break;
 		case ShapeType::Polygon:
 			savePolygon();
+			saveOrder();
 			break;
 
 		default:
@@ -45,6 +50,7 @@ void SavingImage::loadAllShapes(sf::RenderWindow& window)
 	loadRectangle(window);
 	loadCircle(window);
 	loadPolygon(window);
+	loadOrder();
 }
 
 void SavingImage::saveRectangle()
@@ -123,6 +129,14 @@ void SavingImage::savePolygon()
 	savingPolygon.pointCounter = polygon.points.size();
 	f.write(reinterpret_cast<char*>(&savingPolygon.pointCounter), sizeof(savingPolygon.pointCounter));
 
+	savingPolygon.r = polygon.polygonColor.r;
+	savingPolygon.g = polygon.polygonColor.g;
+	savingPolygon.b = polygon.polygonColor.b;
+
+	f.write(reinterpret_cast<char*>(&savingPolygon.r), sizeof(savingPolygon.r));
+	f.write(reinterpret_cast<char*>(&savingPolygon.g), sizeof(savingPolygon.g));
+	f.write(reinterpret_cast<char*>(&savingPolygon.b), sizeof(savingPolygon.b));
+
 	if (!f.is_open())
 	{
 		std::cout << "ERROR SAVING " << polygonFileName;
@@ -132,16 +146,59 @@ void SavingImage::savePolygon()
 	{
 		savingPolygon.posX[i] = polygon.points[i].getPosition().x;
 		savingPolygon.posY[i] = polygon.points[i].getPosition().y;
+
 		f.write(reinterpret_cast<char*>(&savingPolygon.posX[i]), sizeof(savingPolygon.posX[i]));
 		f.write(reinterpret_cast<char*>(&savingPolygon.posY[i]), sizeof(savingPolygon.posY[i]));
 	}
 
 	f.close();
 }
+void SavingImage::saveOrder()
+{
+	std::fstream f;
+	f.open(shapeOrderFileName, std::ios::app | std::ios::binary);
+
+	if (!f.is_open())
+	{
+		std::cout << "ERROR SAVING " << shapeOrderFileName;
+		return;
+	}
+
+	auto& type = ShapeSelector::allShapeTypes.back();
+
+	switch (type)
+	{
+		case ShapeType::Rectangle:
+			savingOrder = 'r';
+			break;
+
+		case ShapeType::Circle:
+			savingOrder = 'c';
+			break;
+
+		case ShapeType::Triangle:
+			savingOrder = 't';
+			break;
+
+		case ShapeType::Polygon:
+			savingOrder = 'p';
+			break;
+
+		default:
+			break;
+	}
+	f.write(reinterpret_cast<char*>(&savingOrder), sizeof(savingOrder));
+	f.close();
+}
 void SavingImage::deleteAllShapes()
 {
 	std::fstream temp;
 
+	if (ShapeSelector::allShapeTypes.size() == 1)
+	{
+		temp.open(shapeOrderFileName, std::ios::out | std::ios::trunc | std::ios::binary);
+		temp.close();
+	}
 	if (ShapeSelector::shapes.polygons.size() == 0)
 	{
 		temp.open(polygonFileName, std::ios::out | std::ios::trunc | std::ios::binary);
@@ -234,6 +291,12 @@ void SavingImage::loadPolygon(sf::RenderWindow& window)
 		Polygon poly;
 		f.read(reinterpret_cast<char*>(&currPolygon.pointCounter), sizeof(currPolygon.pointCounter));
 
+		f.read(reinterpret_cast<char*>(&currPolygon.r), sizeof(currPolygon.r));
+		f.read(reinterpret_cast<char*>(&currPolygon.g), sizeof(currPolygon.g));
+		f.read(reinterpret_cast<char*>(&currPolygon.b), sizeof(currPolygon.b));
+
+		poly.polygonColor = sf::Color(currPolygon.r, currPolygon.g, currPolygon.b);
+
 		poly.isFinished = true;
 		for (int i = 0; i < currPolygon.pointCounter; i++)
 		{
@@ -246,6 +309,52 @@ void SavingImage::loadPolygon(sf::RenderWindow& window)
 		ShapeSelector::shapes.polygons.push_back(poly);
 	}
 
+	f.close();
+}
+void SavingImage::loadOrder()
+{
+	std::fstream f;
+	f.open(shapeOrderFileName, std::ios::in | std::ios::binary);
+
+	if (!f.is_open())
+	{
+		std::cout << "ERROR LOADING " << shapeOrderFileName;
+		return;
+	}
+
+	int fileSize = 0;
+
+	f.seekg(0, std::ios::end);
+	fileSize = f.tellg();
+	f.seekg(0, std::ios::beg);
+
+	while (f.tellg() < fileSize)
+	{
+		char type;
+		f.read(reinterpret_cast<char*>(&type), sizeof(type));
+
+		switch (type)
+		{
+			case 'r':
+				ShapeSelector::allShapeTypes.push_back(ShapeType::Rectangle);
+				break;
+
+			case 'c':
+				ShapeSelector::allShapeTypes.push_back(ShapeType::Circle);
+				break;
+
+			case 't':
+				ShapeSelector::allShapeTypes.push_back(ShapeType::Triangle);
+				break;
+
+			case 'p':
+				ShapeSelector::allShapeTypes.push_back(ShapeType::Polygon);
+				break;
+
+			default:
+				break;
+		}
+	}
 	f.close();
 }
 }

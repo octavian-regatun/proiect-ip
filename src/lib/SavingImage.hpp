@@ -15,6 +15,7 @@ struct Circle
 };
 struct thisPolygon
 {
+	int r, g, b;
 	int pointCounter, posX[10], posY[10]; // din pacate nu putem stoca std::vectori in fisiere binare 😞
 };
 
@@ -23,21 +24,24 @@ class SavingImage
 private:
 	static void saveRectangle();
 	static void saveCircle();
+	static void saveOrder();
 	static void loadRectangle(sf::RenderWindow& window);
 	static void loadCircle(sf::RenderWindow& window);
 	static void loadPolygon(sf::RenderWindow& window);
+	static void loadOrder();
 
 	static void deleteAllShapes();
+
+	static Rectangle savingRect;
+	static Circle savingCircle;
+	static thisPolygon savingPolygon;
+	static char savingOrder;
 
 public:
 	static void savePolygon();
 	static void saveAllShapes();
 
 	static void loadAllShapes(sf::RenderWindow& window);
-
-	static Rectangle savingRect;
-	static Circle savingCircle;
-	static thisPolygon savingPolygon;
 };
 
 }

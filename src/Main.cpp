@@ -29,8 +29,35 @@ int main()
 		{
 			my::Screen::screenHandler(window, event);
 			my::AllButtons::handleEvents(window, event);
+
 			if (event.type == sf::Event::Closed)
 				window.close();
+			if (event.type == sf::Event::TextEntered)
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::P))
+					for (auto type : my::ShapeSelector::allShapeTypes)
+						switch (type)
+						{
+							case my::ShapeType::Rectangle: {
+								std::cout << "rect\n";
+							}
+							break;
+							case my::ShapeType::Circle: {
+								std::cout << "circle\n";
+							}
+							break;
+							case my::ShapeType::Triangle: {
+								std::cout << "triangle\n";
+							}
+							break;
+							case my::ShapeType::Polygon: {
+								std::cout << "polygon\n";
+							}
+							break;
+							case my::ShapeType::Nothing:
+								break;
+							default:
+								break;
+						}
 		}
 	}
 	return 0;

@@ -14,6 +14,8 @@ namespace my
 ShapeType ShapeSelector::selectedShape = ShapeType::Nothing;
 ShapeType ShapeSelector::movingShape = ShapeType::Nothing;
 
+std::vector<ShapeType> ShapeSelector::allShapeTypes;
+
 Shapes ShapeSelector::shapes = {
 	std::vector<sf::RectangleShape>(),
 	std::vector<sf::CircleShape>(),
@@ -46,6 +48,8 @@ void ShapeSelector::handleCircleSelection(sf::RenderWindow& window)
 	addCircle(window, r);
 
 	setMovingShape();
+
+
 }
 
 void ShapeSelector::handleRectangleSelection(sf::RenderWindow& window)
@@ -96,6 +100,7 @@ void ShapeSelector::handlePolygonSelection(sf::RenderWindow& window, sf::Event& 
 void ShapeSelector::setMovingShape()
 {
 	movingShape = selectedShape;
+	allShapeTypes.push_back(movingShape);
 	selectedShape = ShapeType::Nothing;
 }
 

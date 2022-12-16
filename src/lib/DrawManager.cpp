@@ -8,59 +8,38 @@
 
 namespace my
 {
+
 void DrawManager::drawShapes(sf::RenderWindow& window)
 {
-	if (Screen::currentScreen == ScreenType::FirstImage)
-	{
-		for (auto& rectangle : ShapeSelector::shapes.rectangles)
-		{
-			window.draw(rectangle);
-		}
+	int r, c, t, p;
+	r = c = t = p = 0; //counters for all shapes
+	Shapes currentShape = ShapeSelector::shapes;
+	if (Screen::currentScreen == ScreenType::SecondImage)
+		currentShape = ShapeSelector::shapes2;
 
-		for (auto& circle : ShapeSelector::shapes.circles)
+	for (auto type : ShapeSelector::allShapeTypes)
+		switch (type)
 		{
-			window.draw(circle);
-		}
+			case ShapeType::Rectangle:
+				window.draw(currentShape.rectangles[r++]);
+				break;
+			case ShapeType::Circle:
+				window.draw(currentShape.circles[c++]);
+				break;
+			case ShapeType::Triangle:
+				window.draw(currentShape.triangles[t++]);
+				break;
+			case ShapeType::Polygon:
+				for (auto& point : currentShape.polygons[p].points)
+				{
+					window.draw(point);
+				}
+				p++;
+				break;
 
-		for (auto& triangle : ShapeSelector::shapes.triangles)
-		{
-			window.draw(triangle);
+			default:
+				break;
 		}
-
-		for (auto& polygon : ShapeSelector::shapes.polygons)
-		{
-			for (auto& point : polygon.points)
-			{
-				window.draw(point);
-			}
-		}
-	}
-	else if (Screen::currentScreen == ScreenType::SecondImage)
-	{
-		for (auto& rectangle : ShapeSelector::shapes2.rectangles)
-		{
-			window.draw(rectangle);
-		}
-
-		for (auto& circle : ShapeSelector::shapes2.circles)
-		{
-			window.draw(circle);
-		}
-
-		for (auto& triangle : ShapeSelector::shapes2.triangles)
-		{
-			window.draw(triangle);
-		}
-
-		for (auto& polygon : ShapeSelector::shapes2.polygons)
-		{
-			for (auto& point : polygon.points)
-			{
-				window.draw(point);
-			}
-		}
-	}
-
 	drawLinesBetweenPolygonPoints(window);
 }
 
@@ -130,7 +109,7 @@ void DrawManager::handleAddPolygonPoint(sf::RenderWindow& window, sf::Event& eve
 		sf::CircleShape point;
 
 		point.setRadius(2);
-		point.setFillColor(sf::Color::White);
+		point.setFillColor(ColorSelector::activeColor);
 		sf::Vector2u pos = DrawManager::setShapeBoundaries(window, point.getLocalBounds(), point.getGlobalBounds());
 		point.setPosition(pos.x, pos.y);
 
@@ -154,7 +133,7 @@ void DrawManager::movePointsFromPolygon(sf::RenderWindow& window, sf::Event& eve
 	{
 		point.setRadius(2);
 		point.setOrigin(2, 2);
-		point.setFillColor(sf::Color::White);
+		point.setFillColor(polygon.polygonColor);
 
 		if (point.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(window))))
 		{
@@ -178,7 +157,6 @@ void DrawManager::handleSavePosition(sf::RenderWindow& window, sf::Event& event)
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::L))
 	{
-		std::cout << "test";
 		SavingImage::loadAllShapes(window);
 	}
 
@@ -193,7 +171,10 @@ void DrawManager::handleSavePosition(sf::RenderWindow& window, sf::Event& event)
 	if (ShapeSelector::shapes.polygons.size() == 0)
 		return;
 	if (!ShapeSelector::shapes.polygons.back().isFinished)
+	{
 		ShapeSelector::shapes.polygons.pop_back();
+		ShapeSelector::allShapeTypes.pop_back();
+	}
 }
 
 void DrawManager::handleSizeIncrease(sf::RenderWindow& window, sf::Event& event)
@@ -327,10 +308,15 @@ void DrawManager::clampShapeSize(sf::CircleShape& shape)
 
 void DrawManager::drawLinesBetweenPolygonPoints(sf::RenderWindow& window)
 {
-	if (ShapeSelector::shapes.polygons.size() > 0)
+	auto shape = ShapeSelector::shapes;
+	if (Screen::currentScreen == ScreenType::SecondImage)
+		shape = ShapeSelector::shapes2;
+
+	if (shape.polygons.size() > 0)
 	{
-		for (auto& polygon : ShapeSelector::shapes.polygons)
+		for (auto& polygon : shape.polygons)
 		{
+
 			auto& points = polygon.points;
 
 			for (int i = 0; i < points.size() - 1; i++)
@@ -340,7 +326,7 @@ void DrawManager::drawLinesBetweenPolygonPoints(sf::RenderWindow& window)
 					sf::Vertex(points[i + 1].getPosition())
 				};
 
-				sf::Color color = points[i].getFillColor();
+				sf::Color color = polygon.polygonColor;
 
 				line[0].color = color;
 				line[1].color = color;

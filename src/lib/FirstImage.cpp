@@ -29,6 +29,7 @@ void FirstImage::handleEvents(sf::RenderWindow& window, sf::Event& event)
 
 void FirstImage::displayText(sf::RenderWindow& window)
 {
+
 	sf::Text text;
 
 	text.setFont(Font::font);
@@ -38,7 +39,6 @@ void FirstImage::displayText(sf::RenderWindow& window)
 	text.setPosition(window.getSize().x / 2 - 50, window.getSize().y - 50);
 
 	window.draw(text);
-	window.display();
 }
 
 void FirstImage::handleNextImage(sf::RenderWindow& window, sf::Event& event)

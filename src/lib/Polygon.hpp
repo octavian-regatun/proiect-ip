@@ -7,6 +7,7 @@ class Polygon
 public:
 	std::vector<sf::CircleShape> points;
 	bool isFinished;
+	sf::Color polygonColor;
 
 public:
 	Polygon();

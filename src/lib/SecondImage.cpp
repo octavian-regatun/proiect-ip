@@ -43,12 +43,23 @@ void SecondImage::displayText(sf::RenderWindow& window)
 
 void SecondImage::moveAllShapes(sf::RenderWindow& window)
 {
+
 	for (auto& rectangle : ShapeSelector::shapes2.rectangles)
 	{
+
 		if (rectangle.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(window))) && sf::Mouse::isButtonPressed(sf::Mouse::Left))
 		{
-			rectangle.setPosition(sf::Vector2f(sf::Mouse::getPosition(window)));
-			return;
+
+			while (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+			{
+				window.clear(ColorSelector::backgroundColor);
+				DrawManager::drawShapes(window);
+				sf::Vector2u pos = DrawManager::setShapeBoundaries(window, rectangle.getLocalBounds(), rectangle.getGlobalBounds());
+				rectangle.setPosition(pos.x, pos.y);
+
+				window.draw(rectangle);
+				displayText(window);
+			}
 		}
 	}
 
@@ -56,8 +67,16 @@ void SecondImage::moveAllShapes(sf::RenderWindow& window)
 	{
 		if (circle.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(window))) && sf::Mouse::isButtonPressed(sf::Mouse::Left))
 		{
-			circle.setPosition(sf::Vector2f(sf::Mouse::getPosition(window)));
-			return;
+			while (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+			{
+				window.clear(ColorSelector::backgroundColor);
+				DrawManager::drawShapes(window);
+				sf::Vector2u pos = DrawManager::setShapeBoundaries(window, circle.getLocalBounds(), circle.getGlobalBounds());
+				circle.setPosition(pos.x, pos.y);
+
+				window.draw(circle);
+				displayText(window);
+			}
 		}
 	}
 
@@ -65,8 +84,16 @@ void SecondImage::moveAllShapes(sf::RenderWindow& window)
 	{
 		if (triangle.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(window))) && sf::Mouse::isButtonPressed(sf::Mouse::Left))
 		{
-			triangle.setPosition(sf::Vector2f(sf::Mouse::getPosition(window)));
-			return;
+			while (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+			{
+				window.clear(ColorSelector::backgroundColor);
+				DrawManager::drawShapes(window);
+				sf::Vector2u pos = DrawManager::setShapeBoundaries(window, triangle.getLocalBounds(), triangle.getGlobalBounds());
+				triangle.setPosition(pos.x, pos.y);
+
+				window.draw(triangle);
+				displayText(window);
+			}
 		}
 	}
 }
@@ -79,7 +106,7 @@ void SecondImage::movePointsFromPolygon(sf::RenderWindow& window)
 		{
 			point.setRadius(2);
 			point.setOrigin(2, 2);
-			point.setFillColor(sf::Color::White);
+			point.setFillColor(polygon.polygonColor);
 
 			if (point.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(window))))
 			{
