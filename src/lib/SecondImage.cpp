@@ -44,8 +44,10 @@ void SecondImage::displayText(sf::RenderWindow& window)
 void SecondImage::moveAllShapes(sf::RenderWindow& window)
 {
 
-	for (auto& rectangle : ShapeSelector::shapes2.rectangles)
+	//for (auto& rectangle : ShapeSelector::shapes2.rectangles)
+	for (int i = ShapeSelector::shapes2.rectangles.size() - 1; i >= 0; i--)
 	{
+		auto& rectangle = ShapeSelector::shapes2.rectangles[i];
 
 		if (rectangle.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(window))) && sf::Mouse::isButtonPressed(sf::Mouse::Left))
 		{
@@ -63,8 +65,10 @@ void SecondImage::moveAllShapes(sf::RenderWindow& window)
 		}
 	}
 
-	for (auto& circle : ShapeSelector::shapes2.circles)
+	for (int i = ShapeSelector::shapes2.circles.size() - 1; i >= 0; i--)
 	{
+		auto& circle = ShapeSelector::shapes2.circles[i];
+
 		if (circle.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(window))) && sf::Mouse::isButtonPressed(sf::Mouse::Left))
 		{
 			while (sf::Mouse::isButtonPressed(sf::Mouse::Left))
@@ -80,8 +84,9 @@ void SecondImage::moveAllShapes(sf::RenderWindow& window)
 		}
 	}
 
-	for (auto& triangle : ShapeSelector::shapes2.triangles)
+	for (int i = ShapeSelector::shapes2.triangles.size() - 1; i >= 0; i--)
 	{
+		auto& triangle = ShapeSelector::shapes2.triangles[i];
 		if (triangle.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(window))) && sf::Mouse::isButtonPressed(sf::Mouse::Left))
 		{
 			while (sf::Mouse::isButtonPressed(sf::Mouse::Left))
