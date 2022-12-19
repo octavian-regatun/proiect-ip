@@ -13,6 +13,8 @@ namespace my
 void SecondImage::display(sf::RenderWindow& window)
 {
 	window.clear(ColorSelector::backgroundColor);
+	window.display();
+
 	DrawManager::drawShapes(window);
 	SecondImage::moveAllShapes(window);
 	SecondImage::movePointsFromPolygon(window);
