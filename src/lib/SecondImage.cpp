@@ -4,6 +4,7 @@
 #include "DrawManager.hpp"
 #include "Font.hpp"
 #include "MenuSelector.hpp"
+#include "SavingImage.hpp"
 #include "Screen.hpp"
 #include "ShapeSelector.hpp"
 
@@ -24,9 +25,10 @@ void SecondImage::display(sf::RenderWindow& window)
 
 void SecondImage::handleEvents(sf::RenderWindow& window, sf::Event& event)
 {
-	ShapeSelector::handleShapeSelection(window, event);
-	ShapeSelector::handlePolygonFinish(window, event);
-	DrawManager::handleEvents(window, event);
+	//ShapeSelector::handleShapeSelection(window, event);
+	//	ShapeSelector::handlePolygonFinish(window, event);
+	//DrawManager::handleEvents(window, event);
+	saveSecondImage();
 }
 
 void SecondImage::displayText(sf::RenderWindow& window)
@@ -127,6 +129,18 @@ void SecondImage::movePointsFromPolygon(sf::RenderWindow& window)
 				}
 			}
 		}
+	}
+}
+void SecondImage::saveSecondImage()
+{
+	static int ok = 0;
+	if (ok)
+		return;
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Enter))
+	{
+		ok = 1;
+		SavingImage::saveSecondImage();
+		std::cout << "llllll";
 	}
 }
 }

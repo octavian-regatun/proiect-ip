@@ -74,6 +74,21 @@ int ShapeSettings::setCircleSettings(sf::RenderWindow& window, std::string argum
 
 	while (!confirmButton.button.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(window))) || event.type != sf::Event::MouseButtonPressed)
 	{
+		//settings size
+		int x = 300;
+		int y = 400;
+
+		createCanvas(window, x, y);
+		createUserInput(window, argument, { window.getSize().x / 2.f - 100, window.getSize().y / 2.f - 120 });
+
+		//creating confirmation button
+		Button confirmButton(window, ColorSelector::backgroundColor, 100, 50, window.getSize().x / 2.f, window.getSize().y / 2.f + 150);
+		confirmButton.setText(window, ColorSelector::textColor, "Confirm", Font::font, 24);
+
+		//creating text input
+		Button textInput(window, ColorSelector::textColor, 60, 50, window.getSize().x / 2.f + 50, window.getSize().y / 2.f - 100);
+
+		//window.display();
 		window.pollEvent(event);
 		writeSize(window, textInput, txt, event);
 	}
@@ -130,6 +145,21 @@ void ShapeSettings::setRectangleSettings(sf::RenderWindow& window, unsigned int&
 
 	while (!isButtonPressed(confirmButton, event, window))
 	{
+		int x = 300;
+		int y = 400;
+
+		createCanvas(window, x, y);
+		createUserInput(window, "Length", { window.getSize().x / 2.f - 100, window.getSize().y / 2.f - 120 });
+		createUserInput(window, "Height", { window.getSize().x / 2.f - 100, window.getSize().y / 2.f - 30 });
+
+		//creating confirmation button
+		Button confirmButton(window, ColorSelector::backgroundColor, 100, 50, window.getSize().x / 2.f, window.getSize().y / 2.f + 150);
+		confirmButton.setText(window, ColorSelector::textColor, "Confirm", Font::font, 24);
+
+		//creating text input
+		Button lengthInput(window, ColorSelector::textColor, 60, 50, window.getSize().x / 2.f + 50, window.getSize().y / 2.f - 100);
+		Button heightInput(window, ColorSelector::textColor, 60, 50, window.getSize().x / 2.f + 50, window.getSize().y / 2.f - 10);
+
 		window.pollEvent(event);
 
 		if (isButtonPressed(lengthInput, event, window))
@@ -138,7 +168,10 @@ void ShapeSettings::setRectangleSettings(sf::RenderWindow& window, unsigned int&
 		if (isButtonPressed(heightInput, event, window))
 			selectedInput = InputType::SecondInput;
 
+		lengthInput.setText(window, sf::Color::Black, lengthTxt + ' ', Font::font, 24);
+		heightInput.setText(window, sf::Color::Black, heightTxt + ' ', Font::font, 24);
 		chooseInputCase(window, selectedInput, lengthInput, heightInput, lengthTxt, heightTxt, event);
+		window.display();
 	}
 
 	if (lengthTxt.empty()) //checks if user didnt write a number

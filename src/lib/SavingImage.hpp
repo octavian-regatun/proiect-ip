@@ -30,6 +30,10 @@ private:
 	static void loadPolygon(sf::RenderWindow& window);
 	static void loadOrder();
 
+	static void image2SaveRectangle();
+	static void image2SaveCircle();
+	static void image2SavePolygon();
+
 	static void deleteAllShapes();
 
 	static Rectangle savingRect;
@@ -40,6 +44,7 @@ private:
 public:
 	static void savePolygon();
 	static void saveAllShapes();
+	static void saveSecondImage();
 
 	static void loadAllShapes(sf::RenderWindow& window);
 };

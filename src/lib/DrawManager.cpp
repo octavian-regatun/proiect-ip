@@ -157,6 +157,10 @@ void DrawManager::handleSavePosition(sf::RenderWindow& window, sf::Event& event)
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::L))
 	{
+		static int ok = 0;
+		if (ok != 0)
+			return;
+		ok = 1;
 		SavingImage::loadAllShapes(window);
 	}
 
