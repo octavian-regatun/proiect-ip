@@ -1,4 +1,5 @@
 #include "SavingImage.hpp"
+#include "Screen.hpp"
 #include "ShapeSelector.hpp"
 #include <fstream>
 #include <iostream>
@@ -15,6 +16,9 @@ std::string circleFileName = "circle.dat";
 std::string polygonFileName = "polygon.dat";
 std::string shapeOrderFileName = "shapeOrder.dat";
 
+std::string image2Prefix = "image2";
+
+//first image
 void SavingImage::saveAllShapes()
 {
 	switch (ShapeSelector::movingShape)
@@ -42,10 +46,6 @@ void SavingImage::saveAllShapes()
 }
 void SavingImage::loadAllShapes(sf::RenderWindow& window)
 {
-	static int ok = 0;
-	if (ok != 0)
-		return;
-	ok = 1;
 
 	loadRectangle(window);
 	loadCircle(window);
@@ -218,7 +218,10 @@ void SavingImage::deleteAllShapes()
 void SavingImage::loadRectangle(sf::RenderWindow& window)
 {
 	std::ifstream f;
-	f.open(rectFileName, std::ios::in | std::ios::binary);
+	if (Screen::currentScreen == ScreenType::FirstImage)
+		f.open(rectFileName, std::ios::in | std::ios::binary);
+	else
+		f.open(image2Prefix + rectFileName, std::ios::in | std::ios::binary);
 
 	int fileSize = 0;
 
@@ -245,7 +248,10 @@ void SavingImage::loadRectangle(sf::RenderWindow& window)
 void SavingImage::loadCircle(sf::RenderWindow& window)
 {
 	std::ifstream f;
-	f.open(circleFileName, std::ios::in | std::ios::binary);
+	if (Screen::currentScreen == ScreenType::FirstImage)
+		f.open(circleFileName, std::ios::in | std::ios::binary);
+	else
+		f.open(image2Prefix + circleFileName, std::ios::in | std::ios::binary);
 
 	int fileSize = 0;
 
@@ -276,7 +282,10 @@ void SavingImage::loadCircle(sf::RenderWindow& window)
 void SavingImage::loadPolygon(sf::RenderWindow& window)
 {
 	std::ifstream f;
-	f.open(polygonFileName, std::ios::in | std::ios::binary);
+	if (Screen::currentScreen == ScreenType::FirstImage)
+		f.open(polygonFileName, std::ios::in | std::ios::binary);
+	else
+		f.open(image2Prefix + polygonFileName, std::ios::in | std::ios::binary);
 
 	int fileSize = 0;
 
@@ -353,6 +362,85 @@ void SavingImage::loadOrder()
 
 			default:
 				break;
+		}
+	}
+	f.close();
+}
+
+//second image
+void SavingImage::saveSecondImage()
+{
+	image2SaveRectangle();
+	image2SaveCircle();
+	image2SavePolygon();
+}
+void SavingImage::image2SaveRectangle()
+{
+	std::fstream f;
+	f.open(image2Prefix + rectFileName, std::ios::out | std::ios::trunc | std::ios::binary);
+
+	if (!f.is_open())
+	{
+		std::cout << "ERROR SAVING " << rectFileName;
+		return;
+	}
+
+	for (auto& rect : ShapeSelector::shapes2.rectangles)
+	{																																															  //auto& rect = ShapeSelector::shapes.rectangles.back();
+		savingRect = { rect.getSize().x, rect.getSize().y, rect.getPosition().x, rect.getPosition().y, rect.getRotation(), rect.getFillColor().r, rect.getFillColor().g, rect.getFillColor().b }; //saving length,height,position and color
+
+		f.write(reinterpret_cast<char*>(&savingRect), sizeof(Rectangle));
+	}
+	f.close();
+}
+void SavingImage::image2SaveCircle()
+{
+	std::fstream f;
+
+	f.open(image2Prefix + circleFileName, std::ios::out | std::ios::trunc | std::ios::binary);
+
+	for (auto& circle : ShapeSelector::shapes2.circles)
+	{
+		savingCircle = { circle.getPosition().x, circle.getPosition().y, circle.getRotation(), circle.getRadius(), circle.getFillColor().r, circle.getFillColor().g, circle.getFillColor().b, circle.getPointCount() };
+		f.write(reinterpret_cast<char*>(&savingCircle), sizeof(savingCircle));
+	}
+	for (auto& triangle : ShapeSelector::shapes2.triangles)
+	{
+		savingCircle = { triangle.getPosition().x, triangle.getPosition().y, triangle.getRotation(), triangle.getRadius(), triangle.getFillColor().r, triangle.getFillColor().g, triangle.getFillColor().b, triangle.getPointCount() };
+		f.write(reinterpret_cast<char*>(&savingCircle), sizeof(savingCircle));
+	}
+	f.close();
+}
+void SavingImage::image2SavePolygon()
+{
+	std::fstream f;
+	f.open(image2Prefix + polygonFileName, std::ios::out | std::ios::trunc | std::ios::binary);
+
+	for (auto& polygon : ShapeSelector::shapes2.polygons)
+	{
+		savingPolygon.pointCounter = polygon.points.size();
+		f.write(reinterpret_cast<char*>(&savingPolygon.pointCounter), sizeof(savingPolygon.pointCounter));
+
+		savingPolygon.r = polygon.polygonColor.r;
+		savingPolygon.g = polygon.polygonColor.g;
+		savingPolygon.b = polygon.polygonColor.b;
+
+		f.write(reinterpret_cast<char*>(&savingPolygon.r), sizeof(savingPolygon.r));
+		f.write(reinterpret_cast<char*>(&savingPolygon.g), sizeof(savingPolygon.g));
+		f.write(reinterpret_cast<char*>(&savingPolygon.b), sizeof(savingPolygon.b));
+
+		if (!f.is_open())
+		{
+			std::cout << "ERROR SAVING " << polygonFileName;
+			return;
+		}
+		for (int i = 0; i < savingPolygon.pointCounter; i++)
+		{
+			savingPolygon.posX[i] = polygon.points[i].getPosition().x;
+			savingPolygon.posY[i] = polygon.points[i].getPosition().y;
+
+			f.write(reinterpret_cast<char*>(&savingPolygon.posX[i]), sizeof(savingPolygon.posX[i]));
+			f.write(reinterpret_cast<char*>(&savingPolygon.posY[i]), sizeof(savingPolygon.posY[i]));
 		}
 	}
 	f.close();
