@@ -21,6 +21,8 @@ int main()
 
 	sf::RenderWindow window(sf::VideoMode(width, height), "Morphing - Proiect IP", sf::Style::Default, settings);
 
+	window.setFramerateLimit(240);
+
 	while (window.isOpen())
 	{
 		sf::Event event;

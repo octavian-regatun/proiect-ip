@@ -4,6 +4,7 @@
 #include "DrawManager.hpp"
 #include "Font.hpp"
 #include "MenuSelector.hpp"
+#include "Morphing.hpp"
 #include "SavingImage.hpp"
 #include "Screen.hpp"
 #include "ShapeSelector.hpp"
@@ -14,11 +15,12 @@ namespace my
 void SecondImage::display(sf::RenderWindow& window)
 {
 	window.clear(ColorSelector::backgroundColor);
-	window.display();
+	// window.display();
 
 	DrawManager::drawShapes(window);
 	SecondImage::moveAllShapes(window);
 	SecondImage::movePointsFromPolygon(window);
+	Morphing::displayMorphingButton(window);
 
 	window.display();
 }
@@ -26,7 +28,7 @@ void SecondImage::display(sf::RenderWindow& window)
 void SecondImage::handleEvents(sf::RenderWindow& window, sf::Event& event)
 {
 	//ShapeSelector::handleShapeSelection(window, event);
-	//	ShapeSelector::handlePolygonFinish(window, event);
+	//ShapeSelector::handlePolygonFinish(window, event);
 	//DrawManager::handleEvents(window, event);
 	saveSecondImage();
 }
@@ -39,7 +41,7 @@ void SecondImage::displayText(sf::RenderWindow& window)
 	text.setString("Second Image");
 	text.setCharacterSize(20);
 	text.setFillColor(sf::Color::White);
-	text.setPosition(window.getSize().x / 2 - 50, window.getSize().y - 50);
+	text.setPosition(window.getSize().x / 2 - 50, window.getSize().y - 30);
 
 	window.draw(text);
 	window.display();
