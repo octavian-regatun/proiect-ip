@@ -13,11 +13,15 @@ void DrawManager::drawShapes(sf::RenderWindow& window)
 {
 	int r, c, t, p;
 	r = c = t = p = 0; //counters for all shapes
+
 	Shapes currentShape = ShapeSelector::shapes;
 	if (Screen::currentScreen == ScreenType::SecondImage)
+	{
 		currentShape = ShapeSelector::shapes2;
+	}
 
 	for (auto type : ShapeSelector::allShapeTypes)
+	{
 		switch (type)
 		{
 			case ShapeType::Rectangle:
@@ -40,6 +44,7 @@ void DrawManager::drawShapes(sf::RenderWindow& window)
 			default:
 				break;
 		}
+	}
 	drawLinesBetweenPolygonPoints(window);
 }
 
@@ -161,7 +166,7 @@ void DrawManager::handleSavePosition(sf::RenderWindow& window, sf::Event& event)
 		if (ok != 0)
 			return;
 		ok = 1;
-		SavingImage::loadAllShapes(window);
+		SavingImage::loadAllShapes(window, 1);
 	}
 
 	if (!(event.text.unicode == 13 && !sf::Mouse::isButtonPressed(sf::Mouse::Left))) //13 for enter key

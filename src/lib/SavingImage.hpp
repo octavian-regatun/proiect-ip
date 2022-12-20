@@ -25,10 +25,11 @@ private:
 	static void saveRectangle();
 	static void saveCircle();
 	static void saveOrder();
-	static void loadRectangle(sf::RenderWindow& window);
-	static void loadCircle(sf::RenderWindow& window);
-	static void loadPolygon(sf::RenderWindow& window);
+	static void loadRectangle(sf::RenderWindow& window, int shapeToSave);
+	static void loadCircle(sf::RenderWindow& window, int shapeToSave);
+	static void loadPolygon(sf::RenderWindow& window, int shapeToSave);
 	static void loadOrder();
+	static bool compareFilesSize(std::string fileName);
 
 	static void image2SaveRectangle();
 	static void image2SaveCircle();
@@ -45,8 +46,9 @@ public:
 	static void savePolygon();
 	static void saveAllShapes();
 	static void saveSecondImage();
+	static bool areAllFilesTheSameSize();
 
-	static void loadAllShapes(sf::RenderWindow& window);
+	static void loadAllShapes(sf::RenderWindow& window, int shapeToSave);
 };
 
 }

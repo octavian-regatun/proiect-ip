@@ -44,15 +44,14 @@ void SavingImage::saveAllShapes()
 			break;
 	}
 }
-void SavingImage::loadAllShapes(sf::RenderWindow& window)
+void SavingImage::loadAllShapes(sf::RenderWindow& window, int shapeToSave)
 {
 
-	loadRectangle(window);
-	loadCircle(window);
-	loadPolygon(window);
+	loadRectangle(window, shapeToSave);
+	loadCircle(window, shapeToSave);
+	loadPolygon(window, shapeToSave);
 	loadOrder();
 }
-
 void SavingImage::saveRectangle()
 {
 	std::fstream f;
@@ -215,10 +214,10 @@ void SavingImage::deleteAllShapes()
 		temp.close();
 	}
 }
-void SavingImage::loadRectangle(sf::RenderWindow& window)
+void SavingImage::loadRectangle(sf::RenderWindow& window, int shapeToSave)
 {
 	std::ifstream f;
-	if (Screen::currentScreen == ScreenType::FirstImage)
+	if (shapeToSave == 1)
 		f.open(rectFileName, std::ios::in | std::ios::binary);
 	else
 		f.open(image2Prefix + rectFileName, std::ios::in | std::ios::binary);
@@ -240,15 +239,24 @@ void SavingImage::loadRectangle(sf::RenderWindow& window)
 		loadRect.setPosition(sf::Vector2f(currRect.posX, currRect.posY));
 		loadRect.setFillColor(sf::Color(currRect.r, currRect.g, currRect.b));
 
-		ShapeSelector::shapes.rectangles.push_back(loadRect);
+		if (shapeToSave == 2)
+		{
+
+			ShapeSelector::shapes2.rectangles.push_back(loadRect);
+		}
+		else
+		{
+
+			ShapeSelector::shapes.rectangles.push_back(loadRect);
+		}
 	}
 
 	f.close();
 }
-void SavingImage::loadCircle(sf::RenderWindow& window)
+void SavingImage::loadCircle(sf::RenderWindow& window, int shapeToSave)
 {
 	std::ifstream f;
-	if (Screen::currentScreen == ScreenType::FirstImage)
+	if (shapeToSave == 1)
 		f.open(circleFileName, std::ios::in | std::ios::binary);
 	else
 		f.open(image2Prefix + circleFileName, std::ios::in | std::ios::binary);
@@ -271,18 +279,28 @@ void SavingImage::loadCircle(sf::RenderWindow& window)
 		newCircle.setPointCount(currCircle.pointCount);
 		newCircle.setFillColor(sf::Color(currCircle.r, currCircle.g, currCircle.b));
 
-		if (newCircle.getPointCount() == 3)
-			ShapeSelector::shapes.triangles.push_back(newCircle);
+		if (shapeToSave == 2)
+		{
+			if (newCircle.getPointCount() == 3)
+				ShapeSelector::shapes2.triangles.push_back(newCircle);
+			else
+				ShapeSelector::shapes2.circles.push_back(newCircle);
+		}
 		else
-			ShapeSelector::shapes.circles.push_back(newCircle);
+		{
+			if (newCircle.getPointCount() == 3)
+				ShapeSelector::shapes.triangles.push_back(newCircle);
+			else
+				ShapeSelector::shapes.circles.push_back(newCircle);
+		}
 	}
 
 	f.close();
 }
-void SavingImage::loadPolygon(sf::RenderWindow& window)
+void SavingImage::loadPolygon(sf::RenderWindow& window, int shapeToSave)
 {
 	std::ifstream f;
-	if (Screen::currentScreen == ScreenType::FirstImage)
+	if (shapeToSave == 1)
 		f.open(polygonFileName, std::ios::in | std::ios::binary);
 	else
 		f.open(image2Prefix + polygonFileName, std::ios::in | std::ios::binary);
@@ -315,13 +333,21 @@ void SavingImage::loadPolygon(sf::RenderWindow& window)
 			poly.addPoint(window, { currPolygon.posX[i], currPolygon.posY[i] });
 		}
 		poly.drawLastLine(window);
-		ShapeSelector::shapes.polygons.push_back(poly);
+
+		if (shapeToSave == 2)
+			ShapeSelector::shapes2.polygons.push_back(poly);
+		else
+			ShapeSelector::shapes.polygons.push_back(poly);
 	}
 
 	f.close();
 }
 void SavingImage::loadOrder()
 {
+
+	if (ShapeSelector::allShapeTypes.size() != 0)
+		return;
+
 	std::fstream f;
 	f.open(shapeOrderFileName, std::ios::in | std::ios::binary);
 
@@ -444,5 +470,34 @@ void SavingImage::image2SavePolygon()
 		}
 	}
 	f.close();
+}
+
+bool SavingImage::areAllFilesTheSameSize()
+{
+	return compareFilesSize(rectFileName) && compareFilesSize(circleFileName) && compareFilesSize(polygonFileName);
+}
+bool SavingImage::compareFilesSize(std::string fileName)
+{
+	std::fstream f1;
+	std::fstream f2;
+
+	f1.open(fileName, std::ios::in | std::ios::binary);
+	f2.open(image2Prefix + fileName, std::ios::in | std::ios::binary);
+
+	f1.seekg(0, std::ios::end);
+	int f1Size = f1.tellg();
+	f1.seekg(0, std::ios::beg);
+
+	f2.seekg(0, std::ios::end);
+	int f2Size = f2.tellg();
+	f2.seekg(0, std::ios::beg);
+
+	f1.close();
+	f2.close();
+
+	if (f1Size != f2Size)
+		return false;
+
+	return true;
 }
 }

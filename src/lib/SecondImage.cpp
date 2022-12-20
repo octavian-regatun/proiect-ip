@@ -15,7 +15,6 @@ namespace my
 void SecondImage::display(sf::RenderWindow& window)
 {
 	window.clear(ColorSelector::backgroundColor);
-	// window.display();
 
 	DrawManager::drawShapes(window);
 	SecondImage::moveAllShapes(window);
@@ -50,7 +49,6 @@ void SecondImage::displayText(sf::RenderWindow& window)
 void SecondImage::moveAllShapes(sf::RenderWindow& window)
 {
 
-	//for (auto& rectangle : ShapeSelector::shapes2.rectangles)
 	for (int i = ShapeSelector::shapes2.rectangles.size() - 1; i >= 0; i--)
 	{
 		auto& rectangle = ShapeSelector::shapes2.rectangles[i];
