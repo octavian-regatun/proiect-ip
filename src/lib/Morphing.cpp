@@ -19,7 +19,7 @@ void Morphing::displayMorphingButton(sf::RenderWindow& window)
 	Screen::goToScreen(ScreenType::Morphing);
 
 	Button button = Button(window, ColorSelector::buttonColor, 200, 50, window.getSize().x / 2 + 15, window.getSize().y - 75);
-	button.setText(window, sf::Color::White, "START MORPHING", Font::font, 20);
+	button.setText(window, ColorSelector::textColor, "START MORPHING", Font::font, 20);
 
 	if (button.button.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(window))) && sf::Mouse::isButtonPressed(sf::Mouse::Left))
 	{

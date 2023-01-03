@@ -35,7 +35,7 @@ void FirstImage::displayText(sf::RenderWindow& window)
 	text.setFont(Font::font);
 	text.setString("First Image");
 	text.setCharacterSize(20);
-	text.setFillColor(sf::Color::White);
+	text.setFillColor(ColorSelector::textColor);
 	text.setPosition(window.getSize().x / 2 - 50, window.getSize().y - 50);
 
 	window.draw(text);
