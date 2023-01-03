@@ -189,17 +189,6 @@ void ShapeSelector::handlePolygonFinish(sf::RenderWindow& window, sf::Event& eve
 			if (shapes.polygons.back().points.size() >= 3)
 			{
 				shapes.polygons.back().isFinished = true;
-				std::vector<sf::VertexArray> triangles = Triangulation::createTrianglesToFillPolygon(window, shapes.polygons.back().points);
-				std::cout << triangles.size();
-
-				for (int i = 0; i < triangles.size(); i++)
-				{
-					auto tr = triangles[i];
-					tr[0].color = sf::Color(i * 100, i * 100, i * 100);
-
-					window.draw(tr);
-				}
-				window.display();
 			}
 		}
 }

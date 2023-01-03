@@ -5,6 +5,7 @@
 #include "Screen.hpp"
 #include "ShapeSelector.hpp"
 #include "Timer.hpp"
+#include "Triangulation.hpp"
 
 namespace my
 {
@@ -33,13 +34,30 @@ void DrawManager::drawShapes(sf::RenderWindow& window)
 			case ShapeType::Triangle:
 				window.draw(currentShape.triangles[t++]);
 				break;
-			case ShapeType::Polygon:
+			case ShapeType::Polygon: {
+
 				for (auto& point : currentShape.polygons[p].points)
 				{
+
 					window.draw(point);
+				}
+				if (!currentShape.polygons[p].isFinished)
+					break;
+
+				std::vector<sf::VertexArray> triangles = Triangulation::createTrianglesToFillPolygon(window, currentShape.polygons[p].points);
+
+				for (int i = 0; i < triangles.size(); i++)
+				{
+					auto triangleColorPoint = triangles[i];
+					triangleColorPoint[0].color = currentShape.polygons[p].polygonColor;
+					triangleColorPoint[1].color = currentShape.polygons[p].polygonColor;
+					triangleColorPoint[2].color = currentShape.polygons[p].polygonColor;
+
+					window.draw(triangleColorPoint);
 				}
 				p++;
 				break;
+			}
 
 			default:
 				break;
@@ -325,6 +343,8 @@ void DrawManager::drawLinesBetweenPolygonPoints(sf::RenderWindow& window)
 	{
 		for (auto& polygon : shape.polygons)
 		{
+			if (polygon.isFinished)
+				continue;
 
 			auto& points = polygon.points;
 

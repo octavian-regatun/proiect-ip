@@ -43,6 +43,8 @@ private:
 	static char savingOrder;
 
 public:
+	static void saveColorPalette(int index);
+	static void loadColorPalette();
 	static void savePolygon();
 	static void saveAllShapes();
 	static void saveSecondImage();

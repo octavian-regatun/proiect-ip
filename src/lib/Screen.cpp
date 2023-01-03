@@ -1,4 +1,5 @@
 #include "Screen.hpp"
+#include "ColorPalette.hpp"
 #include "FirstImage.hpp"
 #include "SecondImage.hpp"
 #include "StartMenu.hpp"
@@ -33,6 +34,10 @@ void Screen::screenHandler(sf::RenderWindow& window, sf::Event& event)
 			StartMenu::initialize();
 			StartMenu::display(window);
 			StartMenu::handleKeyPress(event, window);
+			break;
+		case ScreenType::ColorPalette:
+			ColorPalette::displayMenu(window, event);
+
 			break;
 		case ScreenType::FirstImage:
 			FirstImage::display(window);
