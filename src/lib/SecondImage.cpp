@@ -1,5 +1,6 @@
 #include "SecondImage.hpp"
 #include "Button.hpp"
+#include "Clamp.hpp"
 #include "ColorSelector.hpp"
 #include "DrawManager.hpp"
 #include "Font.hpp"
@@ -12,12 +13,12 @@
 namespace my
 {
 
-void SecondImage::display(sf::RenderWindow& window)
+void SecondImage::display(sf::RenderWindow& window, sf::Event& event)
 {
 	window.clear(ColorSelector::backgroundColor);
 
 	DrawManager::drawShapes(window);
-	SecondImage::moveAllShapes(window);
+	SecondImage::moveAllShapes(window, event);
 	SecondImage::movePointsFromPolygon(window);
 	Morphing::displayMorphingButton(window);
 
@@ -46,7 +47,7 @@ void SecondImage::displayText(sf::RenderWindow& window)
 	window.display();
 }
 
-void SecondImage::moveAllShapes(sf::RenderWindow& window)
+void SecondImage::moveAllShapes(sf::RenderWindow& window, sf::Event& event)
 {
 
 	for (int i = ShapeSelector::shapes2.rectangles.size() - 1; i >= 0; i--)
@@ -59,6 +60,10 @@ void SecondImage::moveAllShapes(sf::RenderWindow& window)
 			while (sf::Mouse::isButtonPressed(sf::Mouse::Left))
 			{
 				window.clear(ColorSelector::backgroundColor);
+
+				rotateRectangle(window, event, rectangle);
+				rectangleSizeDecrease(rectangle);
+				rectangleSizeIncrease(rectangle);
 				DrawManager::drawShapes(window);
 				sf::Vector2u pos = DrawManager::setShapeBoundaries(window, rectangle.getLocalBounds(), rectangle.getGlobalBounds());
 				rectangle.setPosition(pos.x, pos.y);
@@ -78,6 +83,8 @@ void SecondImage::moveAllShapes(sf::RenderWindow& window)
 			while (sf::Mouse::isButtonPressed(sf::Mouse::Left))
 			{
 				window.clear(ColorSelector::backgroundColor);
+				circleSizeDecrease(circle);
+				circleSizeIncrease(circle);
 				DrawManager::drawShapes(window);
 				sf::Vector2u pos = DrawManager::setShapeBoundaries(window, circle.getLocalBounds(), circle.getGlobalBounds());
 				circle.setPosition(pos.x, pos.y);
@@ -96,6 +103,9 @@ void SecondImage::moveAllShapes(sf::RenderWindow& window)
 			while (sf::Mouse::isButtonPressed(sf::Mouse::Left))
 			{
 				window.clear(ColorSelector::backgroundColor);
+				rotateCircle(window, event, triangle);
+				circleSizeDecrease(triangle);
+				circleSizeIncrease(triangle);
 				DrawManager::drawShapes(window);
 				sf::Vector2u pos = DrawManager::setShapeBoundaries(window, triangle.getLocalBounds(), triangle.getGlobalBounds());
 				triangle.setPosition(pos.x, pos.y);
@@ -106,7 +116,70 @@ void SecondImage::moveAllShapes(sf::RenderWindow& window)
 		}
 	}
 }
+void SecondImage::rotateRectangle(sf::RenderWindow& window, sf::Event& event, sf::RectangleShape& rectangle)
+{
+	if (!sf::Keyboard::isKeyPressed(sf::Keyboard::R))
+		return;
 
+	unsigned int angle = rectangle.getRotation() + 1;
+	rectangle.setRotation(angle);
+	rectangle.setOrigin(rectangle.getLocalBounds().width / 2.f, rectangle.getLocalBounds().height / 2.f);
+}
+void SecondImage::rotateCircle(sf::RenderWindow& window, sf::Event& event, sf::CircleShape& circle)
+{
+	if (!sf::Keyboard::isKeyPressed(sf::Keyboard::R))
+		return;
+
+	unsigned int r = circle.getRadius();
+	unsigned int angle = circle.getRotation() + 1;
+
+	clamp(window.getSize().x / 3, 20, r);
+
+	circle.setOrigin(r, r);
+	circle.setRotation(angle);
+}
+void SecondImage::rectangleSizeDecrease(sf::RectangleShape& rectangle)
+{
+	if (!sf::Keyboard::isKeyPressed(sf::Keyboard::E))
+		return;
+
+	if (rectangle.getSize().x - rectangle.getSize().x * 0.1 <= 50 || rectangle.getSize().y - rectangle.getSize().y * 0.1 <= 50)
+		return;
+
+	rectangle.setSize(sf::Vector2f(rectangle.getSize().x - rectangle.getSize().x * 0.01, rectangle.getSize().y - rectangle.getSize().y * 0.01));
+	DrawManager::clampShapeSize(rectangle);
+	rectangle.setOrigin(rectangle.getSize().x / 2, rectangle.getSize().y / 2);
+}
+void SecondImage::rectangleSizeIncrease(sf::RectangleShape& rectangle)
+{
+
+	if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Q))
+		return;
+	if (rectangle.getSize().x + rectangle.getSize().x * 0.1 >= 300 || rectangle.getSize().y + rectangle.getSize().y * 0.1 >= 300)
+		return;
+
+	rectangle.setSize(sf::Vector2f(rectangle.getSize().x + rectangle.getSize().x * 0.01, rectangle.getSize().y + rectangle.getSize().y * 0.01));
+	DrawManager::clampShapeSize(rectangle);
+	rectangle.setOrigin(rectangle.getSize().x / 2, rectangle.getSize().y / 2);
+}
+void SecondImage::circleSizeIncrease(sf::CircleShape& circle)
+{
+	if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Q))
+		return;
+
+	circle.setRadius(circle.getRadius() + circle.getRadius() * 0.01);
+	DrawManager::clampShapeSize(circle);
+	circle.setOrigin(circle.getRadius(), circle.getRadius());
+}
+void SecondImage::circleSizeDecrease(sf::CircleShape& circle)
+{
+	if (!sf::Keyboard::isKeyPressed(sf::Keyboard::E))
+		return;
+
+	circle.setRadius(circle.getRadius() - circle.getRadius() * 0.01);
+	DrawManager::clampShapeSize(circle);
+	circle.setOrigin(circle.getRadius(), circle.getRadius());
+}
 void SecondImage::movePointsFromPolygon(sf::RenderWindow& window)
 {
 	for (auto& polygon : ShapeSelector::shapes2.polygons)

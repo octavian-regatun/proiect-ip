@@ -46,7 +46,7 @@ void Screen::screenHandler(sf::RenderWindow& window, sf::Event& event)
 			backToStartMenu(window, event);
 			break;
 		case ScreenType::SecondImage:
-			SecondImage::display(window);
+			SecondImage::display(window, event);
 			SecondImage::displayText(window);
 			SecondImage::handleEvents(window, event);
 			backToStartMenu(window, event);

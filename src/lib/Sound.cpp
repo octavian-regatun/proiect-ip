@@ -37,7 +37,7 @@ void Sound::toggleSound()
 
 void Sound::displayButton(sf::RenderWindow& window)
 {
-	Button soundButton(window, ColorSelector::buttonColor, 200, 50, window.getSize().x / 2, window.getSize().y / 2 + 70);
+	Button soundButton(window, ColorSelector::buttonColor, 200, 50, window.getSize().x / 2, window.getSize().y / 2 + 200);
 	soundButton.setText(window, ColorSelector::textColor, "SOUND   ", Font::font, 24);
 
 	// on button click toggle sound without using setOnClick

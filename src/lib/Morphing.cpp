@@ -62,15 +62,15 @@ void Morphing::animateAllShapes(sf::RenderWindow& window, unsigned int ms)
 		float progress = (float)clock.getElapsedTime().asMilliseconds() / ms;
 		for (int i = 0; i < ShapeSelector::shapes.circles.size(); i++)
 		{
-			animateCircle(window, ShapeSelector::shapes.circles[i], { ShapeSelector::shapes2.circles[i].getPosition().x, ShapeSelector::shapes2.circles[i].getPosition().y }, progress, isFinished);
+			animateCircle(window, ShapeSelector::shapes.circles[i], { ShapeSelector::shapes2.circles[i].getPosition().x, ShapeSelector::shapes2.circles[i].getPosition().y }, ShapeSelector::shapes2.circles[i].getRadius(), ShapeSelector::shapes2.circles[i].getRotation(), progress, isFinished);
 		}
 		for (int i = 0; i < ShapeSelector::shapes.rectangles.size(); i++)
 		{
-			animateRectangle(window, ShapeSelector::shapes.rectangles[i], { ShapeSelector::shapes2.rectangles[i].getPosition().x, ShapeSelector::shapes2.rectangles[i].getPosition().y }, progress, isFinished);
+			animateRectangle(window, ShapeSelector::shapes.rectangles[i], { ShapeSelector::shapes2.rectangles[i].getPosition().x, ShapeSelector::shapes2.rectangles[i].getPosition().y }, { ShapeSelector::shapes2.rectangles[i].getSize().x, ShapeSelector::shapes2.rectangles[i].getSize().y }, ShapeSelector::shapes2.rectangles[i].getRotation(), progress, isFinished);
 		}
 		for (int i = 0; i < ShapeSelector::shapes.triangles.size(); i++)
 		{
-			animateCircle(window, ShapeSelector::shapes.triangles[i], { ShapeSelector::shapes2.triangles[i].getPosition().x, ShapeSelector::shapes2.triangles[i].getPosition().y }, progress, isFinished);
+			animateCircle(window, ShapeSelector::shapes.triangles[i], { ShapeSelector::shapes2.triangles[i].getPosition().x, ShapeSelector::shapes2.triangles[i].getPosition().y }, ShapeSelector::shapes2.triangles[i].getRadius(), ShapeSelector::shapes2.triangles[i].getRotation(), progress, isFinished);
 		}
 		for (int i = 0; i < ShapeSelector::shapes.polygons.size(); i++)
 		{
@@ -83,7 +83,7 @@ void Morphing::animateAllShapes(sf::RenderWindow& window, unsigned int ms)
 					continue;
 
 				sf::Vector2u finalPoint = { point2.getPosition().x, point2.getPosition().y };
-				animateCircle(window, point1, finalPoint, progress, isFinished);
+				animateCircle(window, point1, finalPoint, point2.getRadius(), point2.getRotation(), progress, isFinished);
 			}
 		}
 		DrawManager::drawShapes(window);
@@ -95,32 +95,40 @@ void Morphing::animateAllShapes(sf::RenderWindow& window, unsigned int ms)
 	}
 }
 
-void Morphing::animateCircle(sf::RenderWindow& window, sf::CircleShape& circle, sf::Vector2u finalPoint, float progress, bool& isFinished)
+void Morphing::animateCircle(sf::RenderWindow& window, sf::CircleShape& circle, sf::Vector2u finalPoint, float finalSize, float finalRotation, float progress, bool& isFinished)
 {
 	sf::Vector2u initialPoint = { circle.getPosition().x, circle.getPosition().y };
-	//sf::Vector2u distance = { finalPoint.x - initialPoint.x, finalPoint.y - initialPoint.y };
+	float initialSize = circle.getRadius();
+	float initialRotation = circle.getRotation();
 
 	isFinished = isShapeFinished(initialPoint, finalPoint);
 
 	if (!isFinished)
+	{
 		circle.setPosition(lerp(initialPoint.x, finalPoint.x, progress), lerp(initialPoint.y, finalPoint.y, progress));
-
-	//window.draw(circle);
+		circle.setRadius(lerp(initialSize, finalSize, progress));
+		circle.setRotation(lerp(initialRotation, finalRotation, progress));
+		circle.setOrigin(circle.getRadius(), circle.getRadius());
+	}
 }
 
-void Morphing::animateRectangle(sf::RenderWindow& window, sf::RectangleShape& rectangle, sf::Vector2u finalPoint, float progress, bool& isFinished)
+void Morphing::animateRectangle(sf::RenderWindow& window, sf::RectangleShape& rectangle, sf::Vector2u finalPoint, sf::Vector2u finalSize, float finalRotation, float progress, bool& isFinished)
 {
 	sf::Vector2u initialPoint = { rectangle.getPosition().x, rectangle.getPosition().y };
-	//sf::Vector2u distance = { finalPoint.x - initialPoint.x, finalPoint.y - initialPoint.y };
+	sf::Vector2u initialSize = { rectangle.getSize().x, rectangle.getSize().y };
+	float initialRotation = rectangle.getRotation();
 
 	isFinished = isShapeFinished(initialPoint, finalPoint);
 
 	if (!isFinished)
+	{
 		rectangle.setPosition(lerp(initialPoint.x, finalPoint.x, progress), lerp(initialPoint.y, finalPoint.y, progress));
+		rectangle.setSize({ lerp(initialSize.x, finalSize.x, progress), lerp(initialSize.y, finalSize.y, progress) });
+		rectangle.setRotation(lerp(initialRotation, finalRotation, progress));
+		rectangle.setOrigin(rectangle.getSize().x / 2, rectangle.getSize().y / 2);
+	}
 
 	rectangle.setPosition(lerp(initialPoint.x, finalPoint.x, progress), lerp(initialPoint.y, finalPoint.y, progress));
-
-	//window.draw(rectangle);
 }
 
 bool Morphing::isShapeFinished(sf::Vector2u initialPoint, sf::Vector2u finalPoint)

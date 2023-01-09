@@ -16,7 +16,7 @@ struct Circle
 struct thisPolygon
 {
 	int r, g, b;
-	int pointCounter, posX[10], posY[10]; // din pacate nu putem stoca std::vectori in fisiere binare 😞
+	int pointCounter, posX[50], posY[50]; // din pacate nu putem stoca std::vectori in fisiere binare 😞
 };
 
 class SavingImage

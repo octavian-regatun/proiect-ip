@@ -292,7 +292,7 @@ void DrawManager::handleRotation(sf::RenderWindow& window, sf::Event& event)
 			unsigned int angle = rectangle.getRotation() + 10;
 			rectangle.setRotation(angle);
 			rectangle.setOrigin(rectangle.getLocalBounds().width / 2.f, rectangle.getLocalBounds().height / 2.f);
-			ShapeSelector::shapes.rectangles.back() = rectangle;
+			//ShapeSelector::shapes.rectangles.back() = rectangle;
 			break;
 		}
 		case ShapeType::Triangle: {
