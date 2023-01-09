@@ -2,10 +2,12 @@
 #include "lib/Button.hpp"
 #include "lib/ColorSelector.hpp"
 #include "lib/Font.hpp"
+#include "lib/SavingImage.hpp"
 #include "lib/Screen.hpp"
 #include "lib/ShapeSelector.hpp"
 #include "lib/Sound.hpp"
 #include "lib/StartMenu.hpp"
+#include "lib/Triangulation.hpp"
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include <string>
@@ -22,6 +24,8 @@ int main()
 
 	sf::RenderWindow window(sf::VideoMode(width, height), "Morphing - Proiect IP", sf::Style::Default, settings);
 
+	my::SavingImage::loadColorPalette();
+
 	window.setFramerateLimit(240);
 
 	while (window.isOpen())
@@ -36,6 +40,10 @@ int main()
 			if (event.type == sf::Event::Closed)
 				window.close();
 		}
+		//	window.draw(superTriangle);
+		//	window.draw(miniTriangle);
+		//	window.draw(lines);
+		//	window.display();
 	}
 	return 0;
 }

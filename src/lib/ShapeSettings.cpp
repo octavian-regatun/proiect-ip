@@ -45,7 +45,7 @@ void ShapeSettings::writeSize(sf::RenderWindow& window, Button currInput, std::s
 		if (event.text.unicode == 8 && txt.length() > 0) //backspace for deleting last digit if text has more than 1 digit
 			txt.pop_back();
 
-		currInput.setText(window, sf::Color::Black, txt + ' ', Font::font, 24);
+		currInput.setText(window, ColorSelector::buttonColor, txt + ' ', Font::font, 24);
 		window.display();
 		Timer::setTimer(150); //timer
 	}
@@ -168,8 +168,8 @@ void ShapeSettings::setRectangleSettings(sf::RenderWindow& window, unsigned int&
 		if (isButtonPressed(heightInput, event, window))
 			selectedInput = InputType::SecondInput;
 
-		lengthInput.setText(window, sf::Color::Black, lengthTxt + ' ', Font::font, 24);
-		heightInput.setText(window, sf::Color::Black, heightTxt + ' ', Font::font, 24);
+		lengthInput.setText(window, ColorSelector::buttonColor, lengthTxt + ' ', Font::font, 24);
+		heightInput.setText(window, ColorSelector::buttonColor, heightTxt + ' ', Font::font, 24);
 		chooseInputCase(window, selectedInput, lengthInput, heightInput, lengthTxt, heightTxt, event);
 		window.display();
 	}

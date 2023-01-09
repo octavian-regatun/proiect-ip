@@ -1,4 +1,6 @@
 #include "SavingImage.hpp"
+#include "ColorPalette.hpp"
+#include "ColorSelector.hpp"
 #include "Screen.hpp"
 #include "ShapeSelector.hpp"
 #include <fstream>
@@ -15,8 +17,40 @@ std::string rectFileName = "rectangle.dat";
 std::string circleFileName = "circle.dat";
 std::string polygonFileName = "polygon.dat";
 std::string shapeOrderFileName = "shapeOrder.dat";
+std::string colorPaletteFileName = "colorPalette.dat";
 
 std::string image2Prefix = "image2";
+
+//color palette
+void SavingImage::saveColorPalette(int index)
+{
+	std::fstream f;
+	f.open(colorPaletteFileName, std::ios::out | std::ios::binary);
+
+	f.write(reinterpret_cast<char*>(&index), sizeof(index));
+	f.close();
+}
+void SavingImage::loadColorPalette()
+{
+	std::fstream f;
+	f.open(colorPaletteFileName, std::ios::in | std::ios::binary);
+	int index = 0;
+
+	int fileSize = 0;
+
+	f.seekg(0, std::ios::end);
+	fileSize = f.tellg();
+	f.seekg(0, std::ios::beg);
+
+	if (fileSize != 0)
+		f.read(reinterpret_cast<char*>(&index), sizeof(index));
+
+	ColorSelector::backgroundColor = ColorPalette::backgroundColors[index];
+	ColorSelector::buttonColor = ColorPalette::buttonColors[index];
+	ColorSelector::textColor = ColorPalette::textColors[index];
+
+	f.close();
+}
 
 //first image
 void SavingImage::saveAllShapes()

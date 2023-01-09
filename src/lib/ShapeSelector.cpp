@@ -4,6 +4,7 @@
 #include "Polygon.hpp"
 #include "ShapeSettings.hpp"
 #include "Timer.hpp"
+#include "Triangulation.hpp"
 #include "lib/Button.hpp"
 #include "lib/ColorSelector.hpp"
 #include "lib/Font.hpp"
@@ -48,8 +49,6 @@ void ShapeSelector::handleCircleSelection(sf::RenderWindow& window)
 	addCircle(window, r);
 
 	setMovingShape();
-
-
 }
 
 void ShapeSelector::handleRectangleSelection(sf::RenderWindow& window)

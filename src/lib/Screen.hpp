@@ -3,6 +3,7 @@ namespace my
 enum class ScreenType
 {
 	StartMenu,
+	ColorPalette,
 	FirstImage,
 	SecondImage,
 	Morphing,

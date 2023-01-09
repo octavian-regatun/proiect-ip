@@ -1,4 +1,5 @@
 #include "StartMenu.hpp"
+#include "AllButtons.hpp"
 #include "Button.hpp"
 #include "ColorSelector.hpp"
 #include "Font.hpp"
@@ -6,7 +7,6 @@
 #include "ShapeSelector.hpp"
 #include "Sound.hpp"
 #include <SFML/Graphics.hpp>
-
 namespace my
 {
 void StartMenu::initialize()
@@ -50,7 +50,12 @@ void StartMenu::displayButtons(sf::RenderWindow& window)
 	Button createButton(window, ColorSelector::buttonColor, length, height, x, y);
 	//ca textul sa se incadreze in centrul butonului ar trebui sa schimbi valorile length,height sau chSize(24)
 	createButton.setText(window, ColorSelector::textColor, "CREATE IMAGE", Font::font, 24);
-	createButton.setOnClick([]() { Screen::goToScreen(ScreenType::FirstImage); });
+	createButton.setOnClick([]() { AllButtons::buttons.clear(); Screen::goToScreen(ScreenType::FirstImage); });
+
+	Button colorPallete(window, ColorSelector::buttonColor, length, height, x, y + 100);
+	//ca textul sa se incadreze in centrul butonului ar trebui sa schimbi valorile length,height sau chSize(24)
+	colorPallete.setText(window, ColorSelector::textColor, "CHANGE COLOR", Font::font, 24);
+	colorPallete.setOnClick([]() {	AllButtons::buttons.clear(); Screen::goToScreen(ScreenType::ColorPalette); });
 }
 
 void StartMenu::handleKeyPress(sf::Event& event, sf::RenderWindow& window)
