@@ -44,7 +44,6 @@ void Sound::displayButton(sf::RenderWindow& window)
 
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
 	{
-		sf::Vector2i mousePos = sf::Mouse::getPosition(window);
 		if (soundButton.button.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(window))) && sf::Mouse::isButtonPressed(sf::Mouse::Left))
 		{
 			toggleSound();
