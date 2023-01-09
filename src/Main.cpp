@@ -4,6 +4,7 @@
 #include "lib/Font.hpp"
 #include "lib/Screen.hpp"
 #include "lib/ShapeSelector.hpp"
+#include "lib/Sound.hpp"
 #include "lib/StartMenu.hpp"
 #include <SFML/Graphics.hpp>
 #include <iostream>

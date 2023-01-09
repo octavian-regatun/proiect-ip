@@ -4,6 +4,7 @@
 #include "Font.hpp"
 #include "Screen.hpp"
 #include "ShapeSelector.hpp"
+#include "Sound.hpp"
 #include <SFML/Graphics.hpp>
 
 namespace my
@@ -19,6 +20,7 @@ void StartMenu::display(sf::RenderWindow& window)
 	window.clear(ColorSelector::backgroundColor);
 	displayTitle(window);
 	displayButtons(window);
+	Sound::displayButton(window);
 	window.display();
 }
 

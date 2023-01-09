@@ -33,6 +33,7 @@ void Screen::screenHandler(sf::RenderWindow& window, sf::Event& event)
 			StartMenu::initialize();
 			StartMenu::display(window);
 			StartMenu::handleKeyPress(event, window);
+
 			break;
 		case ScreenType::FirstImage:
 			FirstImage::display(window);
